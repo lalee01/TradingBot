@@ -16,3 +16,4 @@ const sendTelegramMessage = async (msg: string) => {
     await client.sendMessage(CHAT_NAME ?? '', { message:` ${msg}` })
     .catch((error) => client.logger.error(error))
 }
+export default sendTelegramMessage

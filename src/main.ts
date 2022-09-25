@@ -4,6 +4,7 @@ import getKlines from './binance/query/klines'
 import atrStopLossFinder from './indicator/AtrStopLossFinder'
 import stochasticRsi from './indicator/stochRsi'
 import getHeikinAshi from './chart/heikinAshi'
+import stochRsiStrategy from './strategy/stochRsiStrategy'
 
 
 cron.schedule('*/5 * * * * *', async () => {
@@ -12,12 +13,9 @@ cron.schedule('*/5 * * * * *', async () => {
         const klines = await getKlines() ?? []
         const heikinAshi = await getHeikinAshi(klines)
         const srsi = stochasticRsi(heikinAshi, {})
-    
 
-        console.log(srsi[srsi.length-1])
-        console.log(srsi[srsi.length-2])
-        console.log(srsi[srsi.length-3])
-
+        console.log(await heikinAshi)
+        //stochRsiStrategy()
 
         console.log("it is still running.")
     } catch (e) {
