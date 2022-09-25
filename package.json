@@ -30,6 +30,7 @@
     "node-cron": "^3.0.2",
     "npm": "^8.19.1",
     "technicalindicators": "^3.1.0",
+    "telegram": "^2.11.7",
     "trading-indicator": "^1.0.8"
   }
 }
