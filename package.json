@@ -1,0 +1,35 @@
+{
+  "name": "crypto-trading-bot",
+  "version": "1.0.0",
+  "description": "Node based trading bot for Binance.",
+  "main": "index.js",
+  "scripts": {
+    "build": "swc src -d dist",
+    "build-dev": "npm run build && node --inspect dist/main.js",
+    "dev": "nodemon --ext ts --exec \"npm run build-dev\"",
+    "start": "npm run build && NODE_ENV=production node dist/main.js",
+    "dev-vite": "vite",
+    "build-vite": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.246",
+    "@types/node": "^18.7.14",
+    "@types/node-cron": "^3.0.3",
+    "nodemon": "^2.0.19",
+    "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "@binance/connector": "^1.13.0",
+    "dotenv": "^16.0.2",
+    "install": "^0.13.0",
+    "node-binance-api": "^0.13.1",
+    "node-cron": "^3.0.2",
+    "npm": "^8.19.1",
+    "technicalindicators": "^3.1.0",
+    "trading-indicator": "^1.0.8"
+  }
+}
