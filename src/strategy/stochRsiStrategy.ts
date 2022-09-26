@@ -1,9 +1,10 @@
-import { crossDown, crossUp} from 'technicalindicators'
-import getHeikinAshi from 'src/chart/heikinAshi'
-import { BinanceClient } from 'src/binance/connection'
-import getKlines from 'src/binance/query/klines'
-import stochasticRsi from 'src/indicator/stochRsi'
-import sendTelegramMessage from 'src/telegram/telegram'
+import { CandleList, crossDown, crossUp} from 'technicalindicators'
+import getHeikinAshi from './../chart/heikinAshi'
+import {BinanceClient}  from './../binance/connection'
+import getKlines from './../binance/query/klines'
+import stochasticRsi from './../indicator/stochRsi'
+import sendTelegramMessage from './../telegram/telegram'
+import macdIndicator from './../indicator/macd'
 
 const CRYPTO_PAIR = process.env.CRYPTO_PAIR
 
@@ -43,12 +44,8 @@ const stochRsiStrategy = async () => {
     })
 
     const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines})
-    //srsi[srsi.length-1+indexOffset[0]].k < srsi[srsi.length-1+indexOffset[0]].d && 
-    //                        srsi[srsi.length-2+indexOffset[0]].k > srsi[srsi.length-2+indexOffset[0]].d 
 
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines})
-    //srsi[srsi.length-1+indexOffset[0]].k > srsi[srsi.length-1+indexOffset[0]].d && 
-    //                      srsi[srsi.length-2+indexOffset[0]].k < srsi[srsi.length-2+indexOffset[0]].d
     
     const shortTradeTrigger = crossedShort[crossedShort.length-1+indexOffset[0]]
     const longTradeTrigger = crossedLong[crossedLong.length-1+indexOffset[0]]
@@ -65,8 +62,9 @@ const stochRsiStrategy = async () => {
         sendTelegramMessage(`Long trade : Mark Price :${markPrice} , Take Profit:${takeProfitLong} , Stop Loss:${stopLossLong}  Act`)
     }
     
-    console.log("Cross to short " , crossedShort , "Trigger : " , shortTradeTrigger)
-    console.log("Cross to long " , crossedLong , "Trigger : " , longTradeTrigger)
+    console.log(-1 + indexOffset[0])
+    console.log("Cross to short " , crossedShort.splice(-3) , "Trigger : " , shortTradeTrigger)
+    console.log("Cross to long " , crossedLong.splice(-3) , "Trigger : " , longTradeTrigger)
 }
 
 export default stochRsiStrategy

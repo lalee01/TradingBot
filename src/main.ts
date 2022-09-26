@@ -7,15 +7,14 @@ import getHeikinAshi from './chart/heikinAshi'
 import stochRsiStrategy from './strategy/stochRsiStrategy'
 
 
-cron.schedule('*/5 * * * * *', async () => {
+cron.schedule('*/60 * * * *', async () => {
 
     try {
         const klines = await getKlines() ?? []
         const heikinAshi = await getHeikinAshi(klines)
         const srsi = stochasticRsi(heikinAshi, {})
 
-        console.log(await heikinAshi)
-        //stochRsiStrategy()
+        stochRsiStrategy()
 
         console.log("it is still running.")
     } catch (e) {
