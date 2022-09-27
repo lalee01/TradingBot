@@ -7,7 +7,7 @@ import getHeikinAshi from './chart/heikinAshi'
 import stochRsiStrategy from './strategy/stochRsiStrategy'
 
 
-cron.schedule('*/60 * * * *', async () => {
+cron.schedule('*/10 * * * * *', async () => {
 
     try {
         const klines = await getKlines() ?? []
