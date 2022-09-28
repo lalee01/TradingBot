@@ -3,10 +3,10 @@ import { StringSession } from "telegram/sessions/StringSession.js";
 import "dotenv/config";
 
 const CHAT_NAME =  process.env.CHAT_NAME
-const API_ID = Number(process.env.TELEGRAM_API_ID)
-const API_HASH = process.env.TELEGRAM_HASH;
-const STRING_SESSION = process.env.TELEGRAM_SESSION; // leave this empty for now
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN; // put your bot token here
+const API_ID = Number(process.env.API_ID)
+const API_HASH = process.env.API_HASH;
+const STRING_SESSION = process.env.STRING_SESSION; // leave this empty for now
+const BOT_TOKEN = process.env.BOT_TOKEN; // put your bot token here
 
 
 const sendTelegramMessage = async (msg: string) => {

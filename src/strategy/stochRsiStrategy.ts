@@ -59,8 +59,13 @@ const stochRsiStrategy = async () => {
 
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines})
     
-    const shortTradeTrigger = crossedShort[crossedShort.length-1+indexOffset[0]]
-    const longTradeTrigger = crossedLong[crossedLong.length-1+indexOffset[0]]
+    const shortTradeTrigger = crossedShort[crossedShort.length-1+indexOffset[0]] && 
+        srsiKLines[srsiKLines.length-1+indexOffset[0]] <= 80 &&
+        srsiKLines[srsiKLines.length-2+indexOffset[0]] >= 80
+
+    const longTradeTrigger = crossedLong[crossedLong.length-1+indexOffset[0]] &&
+        srsiKLines[srsiKLines.length-1+indexOffset[0]] >= 20 &&
+        srsiKLines[srsiKLines.length-2+indexOffset[0]] <= 20
 
     if(shortTradeTrigger){
     
@@ -75,11 +80,11 @@ const stochRsiStrategy = async () => {
         sendTelegramMessage(`Long trade : Mark Price :${markPrice} ,
         HA shadow on last 2 candle:${isItShadowed[isItShadowed.length-2+indexOffset[0]]} , ${isItShadowed[isItShadowed.length-1+indexOffset[0]]} `)
     }
-    
-    console.log(isItShadowed[isItShadowed.length-2+indexOffset[0]] , isItShadowed[isItShadowed.length-1+indexOffset[0]])
-    console.log(-1 + indexOffset[0])
-    console.log("Cross to short " , crossedShort.splice(-3) , "Trigger : " , shortTradeTrigger)
-    console.log("Cross to long " , crossedLong.splice(-3) , "Trigger : " , longTradeTrigger)
+    console.log(srsiKLines.slice(-3))
+    console.log("Shadow" , isItShadowed[isItShadowed.length-2+indexOffset[0]] , isItShadowed[isItShadowed.length-1+indexOffset[0]])
+    console.log("Index offset : " , -1 + indexOffset[0])
+    console.log("Cross to short " , crossedShort.slice(-3) , "Trigger : " , shortTradeTrigger)
+    console.log("Cross to long " , crossedLong.slice(-3) , "Trigger : " , longTradeTrigger)
 }
 
 export default stochRsiStrategy
