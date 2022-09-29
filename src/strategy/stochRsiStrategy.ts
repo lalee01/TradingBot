@@ -59,13 +59,13 @@ const stochRsiStrategy = async () => {
 
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines})
     
-    const shortTradeTrigger = crossedShort[crossedShort.length-1+indexOffset[0]] && 
-        srsiKLines[srsiKLines.length-1+indexOffset[0]] <= 80 &&
-        srsiKLines[srsiKLines.length-2+indexOffset[0]] >= 80
+    const shortTradeTrigger = srsiKLines[srsiKLines.length-1+indexOffset[0]] <= 80 &&
+        srsiKLines[srsiKLines.length-2+indexOffset[0]] >= 80 &&
+        srsiKLines[srsiDLines.length-1+indexOffset[0]] >= 80
 
-    const longTradeTrigger = crossedLong[crossedLong.length-1+indexOffset[0]] &&
-        srsiKLines[srsiKLines.length-1+indexOffset[0]] >= 20 &&
-        srsiKLines[srsiKLines.length-2+indexOffset[0]] <= 20
+    const longTradeTrigger = srsiKLines[srsiKLines.length-1+indexOffset[0]] >= 20 &&
+        srsiKLines[srsiKLines.length-2+indexOffset[0]] <= 20 &&
+        srsiKLines[srsiDLines.length-1+indexOffset[0]] <= 20
 
     if(shortTradeTrigger){
     
