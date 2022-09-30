@@ -18,12 +18,20 @@ const stochRsiStrategy = async () => {
     const heikinAshi = await getHeikinAshi(klines)
     const srsi = stochasticRsi(heikinAshi, {})
 
-    const takeProfitLong = (markPrice * 1.03).toFixed(2)
-    const stopLossLong = (markPrice * 0.985).toFixed(2)
-    const takeProfitShort = (markPrice * 0.97).toFixed(2)
-    const stopLossShort = (markPrice * 1.015).toFixed(2)
-
+    
+    const takeProfitLong20 = Number((markPrice * 1.03).toFixed(2))
+    const stopLossLong20 = Number((markPrice * 0.985).toFixed(2))
+    const takeProfitShort80 = Number((markPrice * 0.97).toFixed(2))
+    const stopLossShort80 = Number((markPrice * 1.015).toFixed(2))
+    
+    const tpXLong = Number((markPrice * 1.01).toFixed(2))
+    const slXLong = Number((markPrice * 0.995).toFixed(2))
+    const tpXShort = Number((markPrice * 0.99).toFixed(2))
+    const slXShort = Number((markPrice * 1.005).toFixed(2))
+    
     const isItShadowed : boolean[]= []
+
+/*
 
     for(let i=0 ; i < heikinAshi.close.length ;i++){
         if(heikinAshi.close[i] !== heikinAshi.low[i] && heikinAshi.close[i] !== heikinAshi.high[i] &&
@@ -33,7 +41,7 @@ const stochRsiStrategy = async () => {
                 isItShadowed.push(false)
             }
     }
-
+*/
     const indexOffset = []
     const time = await BinanceClient.useServerTime().catch((e:Error)=>console.log(e))
     const lastCandleCloseTime = klines[klines.length - 1].closeTime
@@ -56,35 +64,60 @@ const stochRsiStrategy = async () => {
     })
 
     const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines})
-
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines})
-    
-    const shortTradeTrigger = srsiKLines[srsiKLines.length-1+indexOffset[0]] <= 80 &&
-        srsiKLines[srsiKLines.length-2+indexOffset[0]] >= 80 &&
-        srsiKLines[srsiDLines.length-1+indexOffset[0]] >= 80
 
-    const longTradeTrigger = srsiKLines[srsiKLines.length-1+indexOffset[0]] >= 20 &&
-        srsiKLines[srsiKLines.length-2+indexOffset[0]] <= 20 &&
-        srsiKLines[srsiDLines.length-1+indexOffset[0]] <= 20
+    const target80Short = srsiKLines[srsiKLines.length-1+indexOffset[0]] <= 80 && srsiKLines[srsiKLines.length-2+indexOffset[0]] >= 80 
+    const target20Long = srsiKLines[srsiKLines.length-1+indexOffset[0]] >= 20 && srsiKLines[srsiKLines.length-2+indexOffset[0]] <= 20 
+
+    const simpleXLong = crossedShort[crossedLong.length-1+indexOffset[0]] &&  srsiDLines[srsiDLines.length-1+indexOffset[0]] >= 20
+    const simpleXShort = crossedShort[crossedShort.length-1+indexOffset[0]] && srsiDLines[srsiDLines.length-1+indexOffset[0]] <= 80
+    
+    const shortTradeTrigger = false
+    const longTradeTrigger = false
+
+    const targetCrossingShort = crossedShort || target80Short || simpleXShort
+    const targetCrossingLong = crossedLong || target20Long || simpleXLong
+
+    if(targetCrossingLong){
+        sendTelegramMessage(`Target crossing Long `)
+    }
+    if(targetCrossingShort){
+        sendTelegramMessage(`Target crossing Short`)
+    }
+
 
     if(shortTradeTrigger){
+        const limitOrders = {
+            sl:stopLossShort80,
+            tp:takeProfitShort80
+        }
+        if(simpleXShort){
+            limitOrders.sl =  slXShort, 
+            limitOrders.tp = tpXShort
+        }
     
         ///shortOrder({stopLossShort , takeProfitShort})
-        sendTelegramMessage(`Short trade : Mark Price :${markPrice} , 
-        HA shadow on last 2 candle:${isItShadowed[isItShadowed.length-2+indexOffset[0]]} , ${isItShadowed[isItShadowed.length-1+indexOffset[0]]} `)
+        sendTelegramMessage(`Short trade : Mark Price :${markPrice} , SL: ${limitOrders.sl} , TP: ${limitOrders.tp}`)
     }
     
     if(longTradeTrigger){
+        const limitOrders = {
+            sl:stopLossLong20,
+            tp:takeProfitLong20
+        }
+        if(simpleXLong){
+            limitOrders.sl =  slXLong, 
+            limitOrders.tp = tpXLong
+        }
     
         ///longOrder({stopLossLong , takeProfitLong})
-        sendTelegramMessage(`Long trade : Mark Price :${markPrice} ,
-        HA shadow on last 2 candle:${isItShadowed[isItShadowed.length-2+indexOffset[0]]} , ${isItShadowed[isItShadowed.length-1+indexOffset[0]]} `)
+        sendTelegramMessage(`Long trade : Mark Price :${markPrice} , SL: ${limitOrders.sl} , TP: ${limitOrders.tp} `)
     }
-    console.log(srsiKLines.slice(-3))
-    console.log("Shadow" , isItShadowed[isItShadowed.length-2+indexOffset[0]] , isItShadowed[isItShadowed.length-1+indexOffset[0]])
+    console.log("-----------------------------------------------------")
+    console.log(srsi.slice(-3))
     console.log("Index offset : " , -1 + indexOffset[0])
-    console.log("Cross to short " , crossedShort.slice(-3) , "Trigger : " , shortTradeTrigger)
-    console.log("Cross to long " , crossedLong.slice(-3) , "Trigger : " , longTradeTrigger)
+    console.log("Cross to short " , crossedShort.slice(-3) , "Trigger : " , shortTradeTrigger , "X:" , simpleXShort)
+    console.log("Cross to long " , crossedLong.slice(-3) , "Trigger : " , longTradeTrigger, "X:" , simpleXLong)
 }
 
 export default stochRsiStrategy
