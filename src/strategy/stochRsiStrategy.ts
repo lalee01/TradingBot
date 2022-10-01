@@ -64,19 +64,21 @@ const stochRsiStrategy = async () => {
     })
 
     const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines})
-    const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines})
+    const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}) 
+
+    const srsiKDDiff = Math.abs(srsiKLines[srsiKLines.length-1+indexOffset[0]] - srsiDLines[srsiDLines.length-1+indexOffset[0]])
 
     const target80Short = srsiKLines[srsiKLines.length-1+indexOffset[0]] <= 80 && srsiKLines[srsiKLines.length-2+indexOffset[0]] >= 80 
     const target20Long = srsiKLines[srsiKLines.length-1+indexOffset[0]] >= 20 && srsiKLines[srsiKLines.length-2+indexOffset[0]] <= 20 
 
-    const simpleXLong = crossedShort[crossedLong.length-1+indexOffset[0]] &&  srsiDLines[srsiDLines.length-1+indexOffset[0]] >= 20
-    const simpleXShort = crossedShort[crossedShort.length-1+indexOffset[0]] && srsiDLines[srsiDLines.length-1+indexOffset[0]] <= 80
+    const simpleXLong = crossedShort[crossedLong.length-1+indexOffset[0]] &&  srsiDLines[srsiDLines.length-1+indexOffset[0]] <= 20
+    const simpleXShort = crossedShort[crossedShort.length-1+indexOffset[0]] && srsiDLines[srsiDLines.length-1+indexOffset[0]] >= 80
     
     const shortTradeTrigger = false
     const longTradeTrigger = false
 
-    const targetCrossingShort = crossedShort || target80Short || simpleXShort
-    const targetCrossingLong = crossedLong || target20Long || simpleXLong
+    const targetCrossingShort = crossedShort[crossedShort.length-1+indexOffset[0]] && srsiKDDiff >5 || target80Short || simpleXShort
+    const targetCrossingLong = crossedLong[crossedLong.length-1+indexOffset[0]] && srsiKDDiff >5 || target20Long || simpleXLong
 
     if(targetCrossingLong){
         sendTelegramMessage(`Target crossing Long `)
@@ -116,8 +118,8 @@ const stochRsiStrategy = async () => {
     console.log("-----------------------------------------------------")
     console.log(srsi.slice(-3))
     console.log("Index offset : " , -1 + indexOffset[0])
-    console.log("Cross to short " , crossedShort.slice(-3) , "Trigger : " , shortTradeTrigger , "X:" , simpleXShort)
-    console.log("Cross to long " , crossedLong.slice(-3) , "Trigger : " , longTradeTrigger, "X:" , simpleXLong)
+    console.log("Cross to short " , crossedShort[crossedShort.length-1+indexOffset[0]] , "Trigger : " , shortTradeTrigger , "X:" , simpleXShort , "sRsiDiff:" , srsiKDDiff)
+    console.log("Cross to long " , crossedLong[crossedLong.length-1+indexOffset[0]] , "Trigger : " , longTradeTrigger, "X:" , simpleXLong , "sRsiDiff:" , srsiKDDiff)
 }
 
 export default stochRsiStrategy
