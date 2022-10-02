@@ -41,14 +41,14 @@ const stochRsiStrategy = async ({ srsi, atr, klines}: Options) => {
     })
 
     const even = (element:Boolean) => element === true
-    const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
-    const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
-    const srsiKDDiff = Math.abs(srsiKLines[srsiKLines.length-1+indexOffset[0]] - srsiDLines[srsiDLines.length-1+indexOffset[0]])
+    const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-2)
+    const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-2)
+    const srsiKDDiff = srsiKLines[srsiKLines.length-1] - srsiDLines[srsiDLines.length-1]
 
     //// ++++++++ I have to add "Trade is not active from sendorder.ts because it can send more notify => [3 element]"
 
-    const shortTradeTrigger = crossedShort.some(even) && srsiKDDiff >5 
-    const longTradeTrigger = crossedLong.some(even) && srsiKDDiff >5 
+    const shortTradeTrigger = crossedShort.some(even) && srsiKDDiff < -5 
+    const longTradeTrigger = crossedLong.some(even) && srsiKDDiff > 5 
 
     const isItCrossed = crossedLong[crossedLong.length-1] || crossedShort[crossedShort.length-1]
 
