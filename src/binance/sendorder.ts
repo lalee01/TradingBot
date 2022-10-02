@@ -3,13 +3,13 @@ import "dotenv/config";
 import sendTelegramMessage from './../telegram/telegram';
 
 type shortProps = {
-  stopLossShort : number
-  takeProfitShort: number
+  slShort : number
+  tpShort: number
 }
 
 type longProps = {
-  stopLossLong : number
-  takeProfitLong: number
+  slLong : number
+  tpLong: number
 }
 
 const binance = new Binance().options({
@@ -44,7 +44,7 @@ const getActiveOrders = async () => {
   })
 }
 
-export const longOrder = async ({stopLossLong , takeProfitLong} : longProps) =>{
+export const longOrder = async ({slLong , tpLong} : longProps) =>{
   
   await account()
   await getActiveOrders()
@@ -60,7 +60,7 @@ export const longOrder = async ({stopLossLong , takeProfitLong} : longProps) =>{
     
     await binance.futuresOrder( "SELL" , symbol, 0 , 0 , {
       type:"STOP_MARKET" , 
-      stopPrice: stopLossLong ,
+      stopPrice: slLong ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
@@ -69,7 +69,7 @@ export const longOrder = async ({stopLossLong , takeProfitLong} : longProps) =>{
 
     await binance.futuresOrder( "SELL" , symbol, 0 , 0 , {
       type:"TAKE_PROFIT_MARKET" , 
-      stopPrice: takeProfitLong ,
+      stopPrice: tpLong ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
@@ -80,7 +80,7 @@ export const longOrder = async ({stopLossLong , takeProfitLong} : longProps) =>{
   }
 }
 
-export const shortOrder = async ({stopLossShort , takeProfitShort}:shortProps) =>{
+export const shortOrder = async ({slShort , tpShort}:shortProps) =>{
 
   await account()
   await getActiveOrders()
@@ -96,7 +96,7 @@ export const shortOrder = async ({stopLossShort , takeProfitShort}:shortProps) =
     
     await binance.futuresOrder( "BUY" , symbol, 0 , 0 , {
       type:"STOP_MARKET" , 
-      stopPrice: stopLossShort ,
+      stopPrice: slShort ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
@@ -105,7 +105,7 @@ export const shortOrder = async ({stopLossShort , takeProfitShort}:shortProps) =
     
     await binance.futuresOrder( "BUY" , symbol, 0 , 0 , {
       type:"TAKE_PROFIT_MARKET" , 
-      stopPrice: takeProfitShort ,
+      stopPrice: tpShort ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
