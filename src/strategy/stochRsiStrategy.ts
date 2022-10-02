@@ -19,19 +19,6 @@ const stochRsiStrategy = async ({ srsi, atr, klines}: Options) => {
     const markPrice = Number(getMarkPrice.markPrice)
     const currenctAtr = atr[atr.length-1]
 
-    const indexOffset = []
-    const time = await BinanceClient.useServerTime().catch((e:Error)=>console.log(e))
-    const lastCandleCloseTime = klines[klines.length - 1].closeTime
-
-    if (time.serverTime > lastCandleCloseTime) {
-        indexOffset.push(0)
-        console.log("Previous")
-                
-    }else{
-        indexOffset.push(-1)
-        console.log("Actual")
-    }  
-
     const srsiDLines : number[] = []
     const srsiKLines : number[] = []
 
@@ -76,7 +63,6 @@ const stochRsiStrategy = async ({ srsi, atr, klines}: Options) => {
     console.log(new Date())
     console.log("ATR : " , currenctAtr)
     console.log(srsi.slice(-3))
-    console.log("Index offset : " , -1 + indexOffset[0])
     console.log("Cross to short " , crossedShort , "Trigger : " , shortTradeTrigger , "sRsiDiff:" , srsiKDDiff)
     console.log("Cross to long " , crossedLong , "Trigger : " , longTradeTrigger, "sRsiDiff:" , srsiKDDiff)
 }
