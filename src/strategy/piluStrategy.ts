@@ -20,12 +20,12 @@ const piluStrategy = ({ srsi, heikinAshi, atr}: Options) => {
         const currentOpen = heikinAshi?.open?.[heikinAshi.open?.length-1]
         //Long
         if(currentOpen && currentSrsri.d < currentSrsri.k && lastSrsi.d < LONG_LEVEL && currentSrsri.d > LONG_LEVEL && isLastCandleBullish) {
-            sendTelegramMessage(`Long order\n ATR: ${currenctAtr}}\n Open: ${heikinAshi?.open?.[heikinAshi.open?.length-1]}\n TP: ${currentOpen??0 + currenctAtr}\n SL: ${currentOpen??0 - currenctAtr/2}`)
+            sendTelegramMessage(`Long order\n ATR: ${currenctAtr}}\n Open: ${currentOpen}\n TP: ${currentOpen + currenctAtr}\n SL: ${currentOpen - currenctAtr/2}`)
         }       
 
         //Short
         if(currentOpen && currentSrsri.d > currentSrsri.k && lastSrsi.d > SHORT_LEVEL && currentSrsri.d < SHORT_LEVEL && isLastCandleBearish) {
-            sendTelegramMessage(`Short order\n ATR: ${currenctAtr}}\n Open: ${heikinAshi?.open?.[heikinAshi.open?.length-1]}\n TP: ${currentOpen??0 - currenctAtr}\n SL: ${currentOpen??0 + currenctAtr/2}`)
+            sendTelegramMessage(`Short order\n ATR: ${currenctAtr}}\n Open: ${currentOpen}\n TP: ${currentOpen - currenctAtr}\n SL: ${currentOpen + currenctAtr/2}`)
         }   
 
 }
