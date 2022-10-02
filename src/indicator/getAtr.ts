@@ -7,7 +7,7 @@ type Options = {
     multiplier?: number
 }
 
-const atrStopLossFinder = (inputData: Klines[], { period = 14, multiplier = 0.75 }: Options) => {
+const getAtr = (inputData: Klines[], { period = 14, multiplier = 0.75 }: Options): number[] => {
     const low = inputData.map(data => {
         return Number(data.lowPrice)
     })
@@ -22,13 +22,7 @@ const atrStopLossFinder = (inputData: Klines[], { period = 14, multiplier = 0.75
     })
 
     
-    const atrData = atr({ low, high, close, period })
-
-    return atrData.map((atr, index) => ({
-        high: atr * multiplier + high[index+period],
-        low: low[index+period] - atr * multiplier,
-        atr
-    }))
+    return atr({ low, high, close, period }).map((atr)=> atr*multiplier)
 }
 
-export default atrStopLossFinder
+export default getAtr

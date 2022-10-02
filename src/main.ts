@@ -1,23 +1,25 @@
 import 'dotenv/config'
 import cron from 'node-cron'
 import getKlines from './binance/query/klines'
-import atrStopLossFinder from './indicator/AtrStopLossFinder'
+import getAtr from './indicator/getAtr'
 import stochasticRsi from './indicator/stochRsi'
 import getHeikinAshi from './chart/heikinAshi'
+import piluStrategy from './strategy/piluStrategy'
 
 
-cron.schedule('*/5 * * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
 
     try {
         const klines = await getKlines() ?? []
         const heikinAshi = await getHeikinAshi(klines)
         const srsi = stochasticRsi(heikinAshi, {})
+        const atr = getAtr(klines, {})
     
-
-        console.log(srsi[srsi.length-1])
-        console.log(srsi[srsi.length-2])
-        console.log(srsi[srsi.length-3])
-
+        piluStrategy({
+            srsi,
+            heikinAshi,
+            atr
+        })
 
         console.log("it is still running.")
     } catch (e) {
