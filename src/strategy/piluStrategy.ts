@@ -6,9 +6,10 @@ type Options = {
     heikinAshi: HeikinAshi,
     srsi: StochasticRSIOutput[]
     atr: number[]
+    busdBalance: string
 }
 
-const piluStrategy = ({ srsi, heikinAshi, atr}: Options) => {
+const piluStrategy = async ({ srsi, heikinAshi, atr, busdBalance}: Options) => {
         const LONG_LEVEL = 20
         const SHORT_LEVEL = 80
 

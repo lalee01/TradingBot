@@ -1,4 +1,3 @@
-import { BollingerBands, CrossDown } from 'technicalindicators'
 import { BinanceClient } from '../connection'
 
 const CRYPTO_PAIR = process.env.CRYPTO_PAIR
