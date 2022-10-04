@@ -8,7 +8,7 @@ type Options = {
   openPrice: number
 }
 
-const LEVERAGE = 10
+const LEVERAGE = Number(process.env.LEVERAGE)
 const CRYPTO_PAIR = process.env.CRYPTO_PAIR
 
 const openOrder = async ({ stopLoss, takeProfit, orderType, availableBalance, openPrice}: Options) => {
