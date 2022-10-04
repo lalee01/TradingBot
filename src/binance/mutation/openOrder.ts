@@ -20,44 +20,27 @@ const openOrder = async ({ stopLoss, takeProfit, orderType, availableBalance, op
 
   if(orderType === "SELL") {
     await BinanceClient.futuresMarketSell( CRYPTO_PAIR, quantity ).then((res:any) => console.log(res))
-    await BinanceClient.futuresOrder( "BUY" , CRYPTO_PAIR, 0 , 0 , {
-      type:"STOP_MARKET" , 
-      stopPrice: stopLoss ,
-      workingType: 'MARK_PRICE' , 
-      priceProtect: true ,
-      closePosition: true,
-      timeInForce: 'GTE_GTC',
-    }).then((res: any) => console.log(res))
-    
-    await BinanceClient.futuresOrder( "BUY" , CRYPTO_PAIR, 0 , 0 , {
-      type:"TAKE_PROFIT_MARKET" , 
-      stopPrice: takeProfit ,
-      workingType: 'MARK_PRICE' , 
-      priceProtect: true ,
-      closePosition: true,
-      timeInForce: 'GTE_GTC',
-    }).then((res: any) => console.log(res))
-    
   } else if (orderType === "BUY") {
     await BinanceClient.futuresMarketBuy( CRYPTO_PAIR, quantity ).then((res:any) => console.log(res))
-    await BinanceClient.futuresOrder( "SELL" , CRYPTO_PAIR, 0 , 0 , {
-      type:"STOP_MARKET" , 
-      stopPrice: stopLoss ,
-      workingType: 'MARK_PRICE' , 
-      priceProtect: true ,
-      closePosition: true,
-      timeInForce: 'GTE_GTC',
-    }).then((res:any) => console.log(res))
-
-    await BinanceClient.futuresOrder( "SELL" , CRYPTO_PAIR, 0 , 0 , {
-      type:"TAKE_PROFIT_MARKET" , 
-      stopPrice: takeProfit ,
-      workingType: 'MARK_PRICE' , 
-      priceProtect: true ,
-      closePosition: true,
-      timeInForce: 'GTE_GTC',
-    }).then((res:any) => console.log(res))
   }
+
+  await BinanceClient.futuresOrder( orderType === "SELL" ? "BUY" : "SELL" , CRYPTO_PAIR, 0 , 0 , {
+    type:"STOP_MARKET" , 
+    stopPrice: stopLoss ,
+    workingType: 'MARK_PRICE' , 
+    priceProtect: true ,
+    closePosition: true,
+    timeInForce: 'GTE_GTC',
+  }).then((res:any) => console.log(res))
+
+  await BinanceClient.futuresOrder( orderType === "SELL" ? "BUY" : "SELL" , CRYPTO_PAIR, 0 , 0 , {
+    type:"TAKE_PROFIT_MARKET" , 
+    stopPrice: takeProfit ,
+    workingType: 'MARK_PRICE' , 
+    priceProtect: true ,
+    closePosition: true,
+    timeInForce: 'GTE_GTC',
+  }).then((res:any) => console.log(res))
 
 }       
 
