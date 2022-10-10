@@ -8,7 +8,7 @@ import piluStrategy from './strategy/piluStrategy'
 import { setTimeout } from 'timers/promises'
 import getAccountInfo from './binance/query/account'
 
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/5 * * * * *', async () => {
     await setTimeout(5000)
     try {
         const { positions, assets} = await getAccountInfo()

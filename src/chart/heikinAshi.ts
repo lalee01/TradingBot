@@ -1,7 +1,7 @@
 import { Klines } from 'src/binance/query/klines'
 import { CandleList, heikinashi } from 'technicalindicators'
 
-export type HeikinAshi= CandleList & { bearish: boolean[], bullish: boolean[]}
+export type HeikinAshi= CandleList & { bearish: boolean[], bullish: boolean[], doji: boolean[]}
 
 const getHeikinAshi = async (klines: Klines[]): Promise<HeikinAshi>  => {
     const open = klines.map(candle =>{
@@ -22,19 +22,25 @@ const getHeikinAshi = async (klines: Klines[]): Promise<HeikinAshi>  => {
 
     const heikinAshi = heikinashi({ open, low, high, close, volume})
 
-    const bearish = (heikinAshi?.open ?? []).map((open, index)=> {
-        return open === heikinAshi.high?.[index]
-    })
+    const bearish: boolean[] = []
+    const bullish: boolean[] = []
+    const doji: boolean[] = []
 
-    const bullish = (heikinAshi?.open ?? []).map((open, index)=> {
-        return open === heikinAshi.low?.[index]
+    (heikinAshi?.open ?? []).map((open: number, index: number)=> {
+        const isBearish = open === heikinAshi.high?.[index]
+        const isBullish = open === heikinAshi.low?.[index]
+        const isDoji = Math.abs(open - (heikinAshi.close?.[index] ?? 0)).toPrecision(4) <= (open * 0.001).toPrecision(4) && !isBearish && !isBullish
+        
+        bearish.push(isBearish)
+        bullish.push(isBullish)
+        doji.push(isDoji)
     })
-
 
     return {
         ...heikinAshi,
         bearish,
-        bullish
+        bullish,
+        doji
     }
 
     
