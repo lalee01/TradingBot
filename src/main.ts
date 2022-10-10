@@ -6,8 +6,10 @@ import getHeikinAshi from './chart/heikinAshi'
 import stochRsiStrategy from './strategy/stochRsiStrategy'
 import getAtr from './indicator/getAtr'
 
+const CRON_TIMING = process.env.CRON_TIMING ?? ''
 
-cron.schedule('*/60 * * * *', async () => {
+
+cron.schedule(CRON_TIMING, async () => {
 
     try {
         const klines = await getKlines() ?? []
@@ -18,7 +20,8 @@ cron.schedule('*/60 * * * *', async () => {
         stochRsiStrategy({
             srsi,
             atr,
-            klines
+            klines,
+            heikinAshi
         })
 
         console.log("it is still running.")

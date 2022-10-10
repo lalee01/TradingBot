@@ -11,9 +11,10 @@ type Options = {
     srsi: StochasticRSIOutput[]
     atr: number[]
     klines:Klines[]
+    heikinAshi: CandleList & { bearish: boolean[], bullish: boolean[], doji: boolean[]}
 }
 
-const stochRsiStrategy = async ({ srsi, atr, klines}: Options) => {
+const stochRsiStrategy = async ({ srsi, atr, klines , heikinAshi}: Options) => {
 
     const getMarkPrice = await BinanceClient.futuresMarkPrice(CRYPTO_PAIR).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
@@ -32,21 +33,17 @@ const stochRsiStrategy = async ({ srsi, atr, klines}: Options) => {
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-2)
     const srsiKDDiff = srsiKLines[srsiKLines.length-1] - srsiDLines[srsiDLines.length-1]
 
-    //// ++++++++ I have to add "Trade is not active from sendorder.ts because it can send more notify => [3 element]"
+    const isItDoji = heikinAshi.doji.slice(-2).some(even)
+    const isItBearish = heikinAshi.bearish.slice(-2).some(even)
+    const isItBullish = heikinAshi.bullish.slice(-2).some(even)
 
-    const shortTradeTrigger = crossedShort.some(even) && srsiKDDiff < -5 
-    const longTradeTrigger = crossedLong.some(even) && srsiKDDiff > 5 
-
-    const isItCrossed = crossedLong[crossedLong.length-1] || crossedShort[crossedShort.length-1]
+    const shortTradeTrigger = crossedShort.some(even) && srsiKDDiff < -6 && isItDoji && isItBearish
+    const longTradeTrigger = crossedLong.some(even) && srsiKDDiff > 6 && isItDoji && isItBullish
 
     const slLong = (markPrice - (currenctAtr / 2)).toFixed(2)
     const tpLong = (markPrice + currenctAtr).toFixed(2)
     const slShort = (markPrice + (currenctAtr / 2)).toFixed(2)
     const tpShort = (markPrice - currenctAtr).toFixed(2)
-
-    if(isItCrossed){
-        sendTelegramMessage(`Crossing`)
-    }
 
     if(shortTradeTrigger){
        
