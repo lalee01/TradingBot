@@ -3,6 +3,8 @@ import { BinanceClient } from '../connection'
 import 'dotenv/config'
 
 const CRYPTO_PAIR = process.env.CRYPTO_PAIR
+const INTERVAL = process.env.INTERVAL
+
 
 type klineTupple = {
     data:  [
@@ -33,7 +35,7 @@ export type Klines = {
 
 const getKlines = async ():Promise<Klines[]|undefined>  => {
     try {
-        const klines = await BinanceClient.futuresCandles(CRYPTO_PAIR, '1h')
+        const klines = await BinanceClient.futuresCandles(CRYPTO_PAIR, INTERVAL)
         return await klines.map((kline: klineTupple[]) => {
             return {
                 openTime: kline[0],

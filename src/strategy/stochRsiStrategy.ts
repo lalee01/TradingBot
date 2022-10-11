@@ -29,13 +29,13 @@ const stochRsiStrategy = async ({ srsi, atr, klines , heikinAshi}: Options) => {
     })
 
     const even = (element:Boolean) => element === true
-    const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-2)
-    const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-2)
+    const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
+    const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
     const srsiKDDiff = srsiKLines[srsiKLines.length-1] - srsiDLines[srsiDLines.length-1]
 
-    const isItDoji = heikinAshi.doji.slice(-2).some(even)
-    const isItBearish = heikinAshi.bearish.slice(-2).some(even)
-    const isItBullish = heikinAshi.bullish.slice(-2).some(even)
+    const isItDoji = heikinAshi.doji.slice(-3).some(even)
+    const isItBearish = heikinAshi.bearish.slice(-3).some(even)
+    const isItBullish = heikinAshi.bullish.slice(-3).some(even)
 
     const shortTradeTrigger = crossedShort.some(even) && srsiKDDiff < -6 && isItDoji && isItBearish
     const longTradeTrigger = crossedLong.some(even) && srsiKDDiff > 6 && isItDoji && isItBullish
@@ -59,7 +59,10 @@ const stochRsiStrategy = async ({ srsi, atr, klines , heikinAshi}: Options) => {
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log("ATR : " , currenctAtr)
-    console.log(srsi.slice(-3))
+    console.log("Doji :" , heikinAshi.doji.slice(-3))
+    console.log("Bearish :" , heikinAshi.bearish.slice(-3))
+    console.log("Bullish :" ,heikinAshi.bullish.slice(-3))
+
     console.log("Cross to short " , crossedShort , "Trigger : " , shortTradeTrigger , "sRsiDiff:" , srsiKDDiff)
     console.log("Cross to long " , crossedLong , "Trigger : " , longTradeTrigger, "sRsiDiff:" , srsiKDDiff)
 }
