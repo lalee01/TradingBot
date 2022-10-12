@@ -19,7 +19,6 @@ cron.schedule(CRON_TIMING, async () => {
 
         stochRsiStrategy({
             srsi,
-            atr,
             klines,
             heikinAshi
         })
