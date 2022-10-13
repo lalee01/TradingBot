@@ -5,7 +5,7 @@ import sendTelegramMessage from './../telegram/telegram'
 import 'dotenv/config'
 import exponentialMovingAverage from './../indicator/ema'
 import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/StochasticRSI'
-import { longOrder, shortOrder } from 'src/binance/sendorder'
+import { longOrder, shortOrder } from './../binance/sendorder'
 
 const CRYPTO_PAIR = process.env.CRYPTO_PAIR
 
