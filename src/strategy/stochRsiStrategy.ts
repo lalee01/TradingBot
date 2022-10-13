@@ -5,6 +5,7 @@ import sendTelegramMessage from './../telegram/telegram'
 import 'dotenv/config'
 import exponentialMovingAverage from './../indicator/ema'
 import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/StochasticRSI'
+import { longOrder, shortOrder } from 'src/binance/sendorder'
 
 const CRYPTO_PAIR = process.env.CRYPTO_PAIR
 
@@ -53,20 +54,20 @@ const stochRsiStrategy = async ({ srsi ,klines , heikinAshi}: Options) => {
     const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && isItBearish[isItBearish.length-1+indexOffset[0]] && markPrice < lastema && crossedShort.some(even)
     const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && isItBullish[isItBullish.length-1+indexOffset[0]] && markPrice > lastema && crossedLong.some(even)
 
-    const slLong = (markPrice * 0.98).toFixed(2)
-    const tpLong = (markPrice * 1.1).toFixed(2)
-    const slShort = (markPrice * 1.02).toFixed(2)
-    const tpShort = (markPrice * 0.9).toFixed(2)
+    const slLong = Number((markPrice * 0.998).toFixed(2))
+    const tpLong = Number((markPrice * 1.01).toFixed(2))
+    const slShort = Number((markPrice * 1.002).toFixed(2))
+    const tpShort = Number((markPrice * 0.99).toFixed(2))
 
     if(shortTradeTrigger){
        
-        ///shortOrder({slShort , tpShort})
+        shortOrder({slShort , tpShort})
         sendTelegramMessage(`Short trade : Mark Price :${markPrice} , SL: ${slShort} , TP: ${tpShort}`)
     }
     
     if(longTradeTrigger){
     
-        ///longOrder({slLong , tpLong})
+        longOrder({slLong , tpLong})
         sendTelegramMessage(`Long trade : Mark Price :${markPrice} , SL: ${slLong} , TP: ${tpLong} `)
     }
     console.log("-----------------------------------------------------")
