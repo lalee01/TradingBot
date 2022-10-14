@@ -61,15 +61,16 @@ const stochRsiStrategy = async ({ srsi ,klines , heikinAshi}: Options) => {
 
     if(shortTradeTrigger){
        
-        shortOrder({slShort , tpShort})
+        //shortOrder({slShort , tpShort})
         sendTelegramMessage(`Short trade : Mark Price :${markPrice} , SL: ${slShort} , TP: ${tpShort}`)
     }
     
     if(longTradeTrigger){
     
-        longOrder({slLong , tpLong})
+        //longOrder({slLong , tpLong})
         sendTelegramMessage(`Long trade : Mark Price :${markPrice} , SL: ${slLong} , TP: ${tpLong} `)
     }
+
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log("Doji :" , heikinAshi.doji.slice(-3))

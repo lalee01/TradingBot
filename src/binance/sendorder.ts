@@ -28,8 +28,8 @@ const symbol = "ETHBUSD"
 
 const account = async () => {
   await binance.useServerTime()
-  await binance.futuresBalance().then((response: { availableBalance: number; }[])=>{
-    accountInfo.balance = response[9].availableBalance
+  await binance.futuresBalance().then((response : any)=>{
+    accountInfo.balance = response[8].availableBalance
   })
 }
 
