@@ -7,7 +7,7 @@ type Options = {
     multiplier?: number
 }
 
-const getAtr = (inputData: Klines[], { period = 14, multiplier = 0.75 }: Options): number[] => {
+const getAtr = (inputData: Klines[], { period = 14, multiplier = 0.5 }: Options): number[] => {
     const low = inputData.map(data => {
         return Number(data.lowPrice)
     })
