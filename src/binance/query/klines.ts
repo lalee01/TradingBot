@@ -33,9 +33,9 @@ export type Klines = {
     closeTime: number
 }
 
-const getKlines = async ():Promise<Klines[]|undefined>  => {
+const getKlines = async (symbol:String):Promise<Klines[]|undefined>  => {
     try {
-        const klines = await BinanceClient.futuresCandles(CRYPTO_PAIR, INTERVAL)
+        const klines = await BinanceClient.futuresCandles(symbol, INTERVAL)
         return await klines.map((kline: klineTupple[]) => {
             return {
                 openTime: kline[0],

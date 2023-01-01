@@ -5,11 +5,13 @@ import sendTelegramMessage from './../telegram/telegram';
 type shortProps = {
   slShort : number
   tpShort: number
+  symbol: String
 }
 
 type longProps = {
   slLong : number
   tpLong: number
+  symbol: String
 }
 
 const binance = new Binance().options({
@@ -24,7 +26,6 @@ export const accountInfo = {
 }
 
 const leverage = 10
-const symbol = "ETHBUSD"
 
 const account = async () => {
   await binance.useServerTime()
@@ -44,7 +45,7 @@ const getActiveOrders = async () => {
   })
 }
 
-export const longOrder = async ({slLong , tpLong} : longProps) =>{
+export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
   
   await account()
   await getActiveOrders()
@@ -80,7 +81,7 @@ export const longOrder = async ({slLong , tpLong} : longProps) =>{
   }
 }
 
-export const shortOrder = async ({slShort , tpShort}:shortProps) =>{
+export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
 
   await account()
   await getActiveOrders()

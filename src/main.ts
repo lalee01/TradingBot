@@ -8,24 +8,30 @@ import atrStopLossFinder from './indicator/AtrStopLossFinder'
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 
+const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
 cron.schedule(CRON_TIMING, async () => {
 
-    try {
-        const klines = await getKlines() ?? []
+    multiCoin.map(async (symbol:String)=>{
+
+        
+        try {
+        const klines = await getKlines(symbol) ?? []
         const heikinAshi = await getHeikinAshi(klines)
         const srsi = stochasticRsi(heikinAshi, {})
-        const atrSLF = atrStopLossFinder(klines , {multiplier : 0.5})
-
+        const atrSLF = await atrStopLossFinder(klines , {multiplier : 0.5})
+        
         stochRsiStrategy({
             srsi,
             klines,
             heikinAshi,
-            atrSLF
+            atrSLF,
+            symbol
         })
-
+        
         console.log("it is still running.")
     } catch (e) {
         console.error(e)
     }
+})
 })
