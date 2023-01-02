@@ -14,24 +14,23 @@ cron.schedule(CRON_TIMING, async () => {
 
     multiCoin.map(async (symbol:String)=>{
 
-        
-        try {
-        const klines = await getKlines(symbol) ?? []
-        const heikinAshi = await getHeikinAshi(klines)
-        const srsi = stochasticRsi(heikinAshi, {})
-        const atrSLF = await atrStopLossFinder(klines , {multiplier : 0.5})
-        
-        stochRsiStrategy({
-            srsi,
-            klines,
-            heikinAshi,
-            atrSLF,
-            symbol
-        })
-        
-        console.log("it is still running.")
-    } catch (e) {
-        console.error(e)
-    }
-})
+            try {
+            const klines = await getKlines(symbol) ?? []
+            const heikinAshi = await getHeikinAshi(klines)
+            const srsi = stochasticRsi(heikinAshi, {})
+            const atrSLF = await atrStopLossFinder(klines , {multiplier : 0.5})
+            
+            stochRsiStrategy({
+                srsi,
+                klines,
+                heikinAshi,
+                atrSLF,
+                symbol
+            })
+            
+            console.log("it is still running.")
+        } catch (e) {
+            console.error(e)
+        }
+    })
 })
