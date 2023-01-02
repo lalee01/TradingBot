@@ -8,11 +8,11 @@ import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/S
 import { longOrder, shortOrder } from './../binance/sendorder'
 
 type Options = {
-    srsi: StochasticRSIOutput[]
     klines:Klines[]
     heikinAshi: CandleList & { bearish: boolean[], bullish: boolean[], doji: boolean[] , newDoji: boolean[]}
     atrSLF: Array <{high:number , low:number , atr:number}>
     symbol: String
+    multiplier : number
 }
 /*
 type Order = {
@@ -22,15 +22,13 @@ type Order = {
 }
 */
 
-const multiplier = 0.5
-
 const orderInfo = {
     side : "SHORT",
     sl : 0,
     tp : 0
 }
 
-const stochRsiStrategy = async ({ srsi ,klines , heikinAshi , atrSLF,symbol}: Options) => {
+const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}: Options) => {
 
     const indexOffset = []
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
@@ -55,10 +53,10 @@ const stochRsiStrategy = async ({ srsi ,klines , heikinAshi , atrSLF,symbol}: Op
     const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice < lastema && isItBearish[isItBearish.length-1+indexOffset[0]]
     const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice > lastema && isItBullish[isItBullish.length-1+indexOffset[0]]
     
-    const slLong = (markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4) ///Number((markPrice * 0.9965).toFixed(2))
-    const tpLong = (markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4) ///Number((markPrice * 1.005).toFixed(2))
-    const slShort = (markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)  ///Number((markPrice * 1.0035).toFixed(2))
-    const tpShort = (markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)  ///Number((markPrice * 0.995).toFixed(2))
+    const slLong = (markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)
+    const tpLong = (markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)
+    const slShort = (markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)
+    const tpShort = (markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)  
     
     //orderInfo.sl = orderInfo.side === "SHORT" ? Number(markPrice*(1+SL)) : Number(markPrice*(1-SL))
     //orderInfo.tp = orderInfo.side === "SHORT" ? Number(markPrice*(1-TP)) : Number(markPrice*(1+TP))
