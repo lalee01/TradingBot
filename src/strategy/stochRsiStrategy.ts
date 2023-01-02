@@ -53,23 +53,23 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice < lastema && isItBearish[isItBearish.length-1+indexOffset[0]]
     const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice > lastema && isItBullish[isItBullish.length-1+indexOffset[0]]
     
-    const slLong = (markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)
-    const tpLong = (markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)
-    const slShort = (markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)
-    const tpShort = (markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4)  
+    const slLong = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4))
+    const tpLong = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4))
+    const slShort = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4))
+    const tpShort = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier).toFixed(4))
     
     //orderInfo.sl = orderInfo.side === "SHORT" ? Number(markPrice*(1+SL)) : Number(markPrice*(1-SL))
     //orderInfo.tp = orderInfo.side === "SHORT" ? Number(markPrice*(1-TP)) : Number(markPrice*(1+TP))
 
     if(shortTradeTrigger){
         //orderInfo.side = "SHORT"
-        //shortOrder({slShort , tpShort ,symbol})
+        shortOrder({slShort , tpShort ,symbol})
         sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice} , SL: ${slShort} , TP: ${tpShort}`)
     }
     
     if(longTradeTrigger){
         //orderInfo.side = "LONG"
-        //longOrder({slLong , tpLong ,symbol})
+        longOrder({slLong , tpLong ,symbol})
         sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice} , SL: ${slLong} , TP: ${tpLong} `)
     }
     

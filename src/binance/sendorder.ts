@@ -25,7 +25,7 @@ export const accountInfo = {
   quantityForTrade : 0
 }
 
-const leverage = 10
+const leverage = Number(process.env.LEVERAGE)
 
 const account = async () => {
   await binance.useServerTime()
@@ -37,7 +37,7 @@ const account = async () => {
 const getActiveOrders = async () => {
   await account()
   await binance.futuresBalance().then(()=>{
-    if(accountInfo.balance <5){
+    if(accountInfo.balance <0.5){
       accountInfo.wasActiveOrder = true
     }else{
       accountInfo.wasActiveOrder = false
@@ -51,7 +51,7 @@ export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
   await getActiveOrders()
 
   const getMarkPrice = await binance.futuresMarkPrice(symbol)
-  const quantity = ((accountInfo.balance*leverage)/getMarkPrice.markPrice * 0.9).toFixed(3)
+  const quantity = (12/getMarkPrice.markPrice).toFixed(3)
   
   if(accountInfo.wasActiveOrder === false) {
     await binance.useServerTime()
@@ -87,7 +87,7 @@ export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
   await getActiveOrders()
 
   const getMarkPrice = await binance.futuresMarkPrice(symbol)
-  const quantity = ((accountInfo.balance*leverage)/getMarkPrice.markPrice * 0.9).toFixed(3)
+  const quantity = (12/getMarkPrice.markPrice).toFixed(3)
 
   if(accountInfo.wasActiveOrder === false) {
     await binance.useServerTime()
