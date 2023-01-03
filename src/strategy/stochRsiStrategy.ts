@@ -63,14 +63,14 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
 
     if(shortTradeTrigger){
         //orderInfo.side = "SHORT"
-        shortOrder({slShort , tpShort ,symbol})
-        sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice} , SL: ${slShort} , TP: ${tpShort}`)
+       // shortOrder({slShort , tpShort ,symbol})
+       // sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice} , SL: ${slShort} , TP: ${tpShort}`)
     }
     
     if(longTradeTrigger){
         //orderInfo.side = "LONG"
-        longOrder({slLong , tpLong ,symbol})
-        sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice} , SL: ${slLong} , TP: ${tpLong} `)
+        //longOrder({slLong , tpLong ,symbol})
+        //sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice} , SL: ${slLong} , TP: ${tpLong} `)
     }
     
     console.log("-----------------------------------------------------")

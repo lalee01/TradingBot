@@ -56,9 +56,9 @@ export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
   
   const priceConverting = () => priceRegexp.exec(getMarkPrice.markPrice)?.[0].length
 
-  const quantity = (12/getMarkPrice.markPrice).toFixed(priceConverting())
-  const convertedSL = slLong.toFixed(priceConverting())
-  const convertedTP = tpLong.toFixed(priceConverting())
+  const quantity = (12/getMarkPrice.markPrice).toFixed(2)
+  const convertedSL = slLong.toFixed(2)
+  const convertedTP = tpLong.toFixed(2)
   
   if(!accountInfo.wasActiveOrder) {
     await binance.useServerTime()
@@ -97,9 +97,9 @@ export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
   
   const priceConverting = () => priceRegexp.exec(getMarkPrice.markPrice)?.[0].length
   
-  const quantity = (12/getMarkPrice.markPrice).toFixed(priceConverting())
-  const convertedSL = slShort.toFixed(priceConverting())
-  const convertedTP = tpShort.toFixed(priceConverting())
+  const quantity = (12/getMarkPrice.markPrice).toFixed(2)
+  const convertedSL = slShort.toFixed(2)
+  const convertedTP = tpShort.toFixed(2)
 
   if(!accountInfo.wasActiveOrder) {
     await binance.useServerTime()
