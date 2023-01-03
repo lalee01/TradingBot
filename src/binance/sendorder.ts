@@ -45,15 +45,22 @@ const getActiveOrders = async () => {
   })
 }
 
+const priceRegexp = new RegExp('(?<=[.])[0-9]{1,}')
+
 export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
   
   await account()
   await getActiveOrders()
 
   const getMarkPrice = await binance.futuresMarkPrice(symbol)
-  const quantity = (12/getMarkPrice.markPrice).toFixed(3)
   
-  if(accountInfo.wasActiveOrder === false) {
+  const priceConverting = () => priceRegexp.exec(getMarkPrice.markPrice)?.[0].length
+
+  const quantity = (12/getMarkPrice.markPrice).toFixed(priceConverting())
+  const convertedSL = slLong.toFixed(priceConverting())
+  const convertedTP = tpLong.toFixed(priceConverting())
+  
+  if(!accountInfo.wasActiveOrder) {
     await binance.useServerTime()
     await binance.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await binance.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
@@ -61,7 +68,7 @@ export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
     
     await binance.futuresOrder( "SELL" , symbol, 0 , 0 , {
       type:"STOP_MARKET" , 
-      stopPrice: slLong ,
+      stopPrice: convertedSL ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
@@ -70,7 +77,7 @@ export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
 
     await binance.futuresOrder( "SELL" , symbol, 0 , 0 , {
       type:"TAKE_PROFIT_MARKET" , 
-      stopPrice: tpLong ,
+      stopPrice: convertedTP ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
@@ -87,9 +94,14 @@ export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
   await getActiveOrders()
 
   const getMarkPrice = await binance.futuresMarkPrice(symbol)
-  const quantity = (12/getMarkPrice.markPrice).toFixed(3)
+  
+  const priceConverting = () => priceRegexp.exec(getMarkPrice.markPrice)?.[0].length
+  
+  const quantity = (12/getMarkPrice.markPrice).toFixed(priceConverting())
+  const convertedSL = slShort.toFixed(priceConverting())
+  const convertedTP = tpShort.toFixed(priceConverting())
 
-  if(accountInfo.wasActiveOrder === false) {
+  if(!accountInfo.wasActiveOrder) {
     await binance.useServerTime()
     await binance.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await binance.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
@@ -97,7 +109,7 @@ export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
     
     await binance.futuresOrder( "BUY" , symbol, 0 , 0 , {
       type:"STOP_MARKET" , 
-      stopPrice: slShort ,
+      stopPrice: convertedSL ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
@@ -106,7 +118,7 @@ export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
     
     await binance.futuresOrder( "BUY" , symbol, 0 , 0 , {
       type:"TAKE_PROFIT_MARKET" , 
-      stopPrice: tpShort ,
+      stopPrice: convertedTP ,
       workingType: 'MARK_PRICE' , 
       priceProtect: true ,
       closePosition: true,
