@@ -46,7 +46,7 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
     
-    const isItDoji = heikinAshi.doji.slice(-3)
+    const isItDoji = heikinAshi.newDoji.slice(-3)
     const isItBearish = heikinAshi.bearish.slice(-3)
     const isItBullish = heikinAshi.bullish.slice(-3)
     
@@ -76,15 +76,14 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log(symbol)
-    console.log("Doji :" , heikinAshi.doji.slice(-3))
+    console.log("Doji :" , heikinAshi.newDoji.slice(-3))
     console.log("Bearish :" , heikinAshi.bearish.slice(-3))
     console.log("Bullish :" ,heikinAshi.bullish.slice(-3))
     
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
     
-    console.log(atrSLF[atrSLF.length-1])
-    console.log(heikinAshi.newDoji.slice(-30))
+    console.log(atrSLF[atrSLF.length-1].atr)
 }
 
 export default stochRsiStrategy
