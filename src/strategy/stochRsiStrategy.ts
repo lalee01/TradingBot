@@ -64,13 +64,13 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     if(shortTradeTrigger){
         //orderInfo.side = "SHORT"
         shortOrder({slShort , tpShort ,symbol})
-        sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice} , SL: ${slShort} , TP: ${tpShort}`)
+        sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(2)} , TP: ${tpShort.toFixed(2)}`)
     }
     
     if(longTradeTrigger){
         //orderInfo.side = "LONG"
         longOrder({slLong , tpLong ,symbol})
-        sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice} , SL: ${slLong} , TP: ${tpLong} `)
+        sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
     }
     
     console.log("-----------------------------------------------------")
@@ -83,7 +83,7 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
     
-    console.log(atrSLF[atrSLF.length-1].atr)
+    console.log(atrSLF[atrSLF.length-1+indexOffset[0]].atr ,'with multiplier :', atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier)
 }
 
 export default stochRsiStrategy

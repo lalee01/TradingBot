@@ -32,7 +32,7 @@ const getHeikinAshi = async (klines: Klines[]): Promise<HeikinAshi>  => {
         const isBullish = open === heikinAshi.low?.[index]
         const isDoji = Math.abs(open - (heikinAshi.close?.[index] ?? 0)).toPrecision(4) <= (open * 0.001).toPrecision(4) && !isBearish && !isBullish
         const newIsDoji =   Math.abs(open-(heikinAshi.close?.[index] ?? 0)) < 
-                            Math.abs((heikinAshi.high?.[index] ?? 0)-(heikinAshi.low?.[index] ?? 0))/5
+                            Math.abs((heikinAshi.high?.[index] ?? 0)-(heikinAshi.low?.[index] ?? 0))/4
                             && !isBearish && !isBullish
         
         bearish.push(isBearish)

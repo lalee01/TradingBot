@@ -15,13 +15,12 @@ const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
 const valami =async ()=>{
     const exchangeInfo = await BinanceClient.exchangeInfo()
-    const indexFinder = (element) => element.symbol == "APTBUSD"
+    const indexFinder = (element : Array<Object>) => element.symbol == "APTBUSD"
     console.log(exchangeInfo.symbols.findIndex(indexFinder))
     console.log(exchangeInfo.symbols[exchangeInfo.symbols.findIndex(indexFinder)])
 
 }
 
-valami()
 cron.schedule(CRON_TIMING, async () => {
 
     multiCoin.map(async (symbol:String)=>{
