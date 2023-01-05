@@ -12,8 +12,10 @@ type Options = {
     heikinAshi: CandleList & { bearish: boolean[], bullish: boolean[], doji: boolean[] , newDoji: boolean[]}
     atrSLF: Array <{high:number , low:number , atr:number}>
     symbol: String
-    multiplier : number
 }
+
+const SLmultiplier = Number(process.env.ATR_MULTIPLIER_SL ?? 0.75)
+const TPmultiplier = Number(process.env.ATR_MULTIPLIER_TP ?? 0.75)
 /*
 type Order = {
     type:string
@@ -28,7 +30,7 @@ const orderInfo = {
     tp : 0
 }
 
-const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}: Options) => {
+const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol}: Options) => {
 
     const indexOffset = []
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
@@ -53,10 +55,10 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice < lastema && isItBearish[isItBearish.length-1+indexOffset[0]]
     const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice > lastema && isItBullish[isItBullish.length-1+indexOffset[0]]
     
-    const slLong = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier))
-    const tpLong = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier))
-    const slShort = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier))
-    const tpShort = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier))
+    const slLong = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
+    const tpLong = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
+    const slShort = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
+    const tpShort = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
     
     //orderInfo.sl = orderInfo.side === "SHORT" ? Number(markPrice*(1+SL)) : Number(markPrice*(1-SL))
     //orderInfo.tp = orderInfo.side === "SHORT" ? Number(markPrice*(1-TP)) : Number(markPrice*(1+TP))
@@ -83,7 +85,10 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol,multiplier}
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
     
-    console.log(atrSLF[atrSLF.length-1+indexOffset[0]].atr ,'with multiplier :', atrSLF[atrSLF.length-1+indexOffset[0]].atr * multiplier)
+    console.log("ATR:",(atrSLF[atrSLF.length-1+indexOffset[0]].atr).toFixed(2) ,
+                 "SL:" ,(atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier).toFixed(2),
+                 "TP:" ,(atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier).toFixed(2)
+                )
 }
 
 export default stochRsiStrategy

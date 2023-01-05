@@ -8,9 +8,6 @@ import atrStopLossFinder from './indicator/AtrStopLossFinder'
 import {BinanceClient}  from './binance/connection'
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
-const multiplier = Number(process.env.ATR_MULTIPLIER ?? 0.75)
-
-
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
 const valami =async ()=>{
@@ -35,7 +32,6 @@ cron.schedule(CRON_TIMING, async () => {
                 heikinAshi,
                 atrSLF,
                 symbol,
-                multiplier
             })
             
             console.log("it is still running.")
