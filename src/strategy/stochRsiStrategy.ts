@@ -35,8 +35,8 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol}: Options) 
     const indexOffset = []
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
     const lastCandleCloseTime = klines[klines.length - 1].closeTime
-    const ema200 = exponentialMovingAverage(klines , {period : 200 , smaPeriod: 5})
-    const lastema = Number(ema200[ema200.length-1].toFixed(2))
+    //const ema200 = exponentialMovingAverage(klines , {period : 200 , smaPeriod: 5})
+    //const lastema = Number(ema200[ema200.length-1].toFixed(2))
     
     if (time.serverTime > lastCandleCloseTime) {
         indexOffset.push(0)
@@ -52,8 +52,8 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol}: Options) 
     const isItBearish = heikinAshi.bearish.slice(-3)
     const isItBullish = heikinAshi.bullish.slice(-3)
     
-    const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice < lastema && isItBearish[isItBearish.length-1+indexOffset[0]]
-    const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && markPrice > lastema && isItBullish[isItBullish.length-1+indexOffset[0]]
+    const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && isItBearish[isItBearish.length-1+indexOffset[0]]
+    const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && isItBullish[isItBullish.length-1+indexOffset[0]]
     
     const slLong = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
     const tpLong = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
