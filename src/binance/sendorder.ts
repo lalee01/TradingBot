@@ -1,6 +1,7 @@
 import Binance from "node-binance-api";
 import "dotenv/config";
 import sendTelegramMessage from './../telegram/telegram';
+import coinSettings from './../binance/coinsettings'
 
 type shortProps = {
   slShort : number
@@ -12,6 +13,12 @@ type longProps = {
   slLong : number
   tpLong: number
   symbol: String
+}
+
+type coinSettingsPrefix = {
+  symbol : string
+  price : number
+  quantity: number
 }
 
 const binance = new Binance().options({
@@ -45,8 +52,6 @@ const getActiveOrders = async () => {
   })
 }
 
-const priceRegexp = new RegExp('(?<=[.])[0-9]{1,}')
-
 export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
   
   await account()
@@ -54,11 +59,11 @@ export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
 
   const getMarkPrice = await binance.futuresMarkPrice(symbol)
   
-  const priceConverting = () => priceRegexp.exec(getMarkPrice.markPrice)?.[0].length
+  const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
 
-  const quantity = (12/getMarkPrice.markPrice).toFixed(2)
-  const convertedSL = slLong.toFixed(2)
-  const convertedTP = tpLong.toFixed(2)
+  const quantity = (12/getMarkPrice.markPrice).toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
+  const convertedSL = slLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
+  const convertedTP = tpLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   
   if(!accountInfo.wasActiveOrder) {
     await binance.useServerTime()
@@ -95,11 +100,11 @@ export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
 
   const getMarkPrice = await binance.futuresMarkPrice(symbol)
   
-  const priceConverting = () => priceRegexp.exec(getMarkPrice.markPrice)?.[0].length
+  const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
   
-  const quantity = (12/getMarkPrice.markPrice).toFixed(2)
-  const convertedSL = slShort.toFixed(2)
-  const convertedTP = tpShort.toFixed(2)
+  const quantity = (12/getMarkPrice.markPrice).toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
+  const convertedSL = slShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
+  const convertedTP = tpShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
 
   if(!accountInfo.wasActiveOrder) {
     await binance.useServerTime()
