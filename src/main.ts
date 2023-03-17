@@ -6,12 +6,25 @@ import getHeikinAshi from './chart/heikinAshi'
 import stochRsiStrategy from './strategy/stochRsiStrategy'
 import atrStopLossFinder from './indicator/AtrStopLossFinder'
 import {BinanceClient}  from './binance/connection'
+import freefeebtcspottrade from './strategy/freefeebtcspottrade'
+import spotGetKlines from './chart/Spot/spotklines'
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
-cron.schedule(CRON_TIMING, async () => {
+const spotSymbol="BTCUSDT"
 
+cron.schedule(CRON_TIMING, async () => {
+ 
+    try {
+        freefeebtcspottrade({
+            spotSymbol
+        })
+    }catch (e) {
+        console.error(e)
+    }
+    
+/*
     multiCoin.map(async (symbol:String)=>{
 
             try {
@@ -31,4 +44,5 @@ cron.schedule(CRON_TIMING, async () => {
             console.error(e)
         }
     })
+    */
 })
