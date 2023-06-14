@@ -7,12 +7,14 @@ type shortProps = {
   slShort : number
   tpShort: number
   symbol: String
+  leverage: number
 }
 
 type longProps = {
   slLong : number
   tpLong: number
   symbol: String
+  leverage: number
 }
 
 type coinSettingsPrefix = {
@@ -32,8 +34,6 @@ export const accountInfo = {
   quantityForTrade : 0
 }
 
-const leverage = Number(process.env.LEVERAGE)
-
 const account = async () => {
   await binance.useServerTime()
   await binance.futuresBalance().then((response : any)=>{
@@ -52,7 +52,7 @@ const getActiveOrders = async () => {
   })
 }
 
-export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
+export const longOrder = async ({slLong , tpLong, symbol, leverage} : longProps) =>{
   
   await account()
   await getActiveOrders()
@@ -93,7 +93,7 @@ export const longOrder = async ({slLong , tpLong, symbol} : longProps) =>{
   }
 }
 
-export const shortOrder = async ({slShort , tpShort ,symbol}:shortProps) =>{
+export const shortOrder = async ({slShort , tpShort ,symbol, leverage}:shortProps) =>{
 
   await account()
   await getActiveOrders()

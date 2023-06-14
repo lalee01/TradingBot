@@ -1,41 +1,28 @@
 import 'dotenv/config'
 import cron from 'node-cron'
 import getKlines from './binance/query/klines'
-import stochasticRsi from './indicator/stochRsi'
-import getHeikinAshi from './chart/heikinAshi'
-import stochRsiStrategy from './strategy/stochRsiStrategy'
-import atrStopLossFinder from './indicator/AtrStopLossFinder'
 import {BinanceClient}  from './binance/connection'
-import freefeebtcspottrade from './strategy/freefeebtcspottrade'
 import spotGetKlines from './chart/Spot/spotklines'
+import trendfinder from './chart/trendfinder'
+import trendwb from './strategy/trendwb'
+
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
-const spotSymbol="BTCUSDT"
+const singleSymbol="ETHBUSD"
+
 
 cron.schedule(CRON_TIMING, async () => {
- 
-    try {
-        freefeebtcspottrade({
-            spotSymbol
-        })
-    }catch (e) {
-        console.error(e)
-    }
-    
-/*
+
     multiCoin.map(async (symbol:String)=>{
 
             try {
             const klines = await getKlines(symbol) ?? []
-            const heikinAshi = await getHeikinAshi(klines)
-            const atrSLF = await atrStopLossFinder(klines,{})
-            
-            stochRsiStrategy({
+            const trend = await trendfinder(klines)
+            trendwb({
                 klines,
-                heikinAshi,
-                atrSLF,
+                trend,
                 symbol
             })
             
@@ -44,5 +31,5 @@ cron.schedule(CRON_TIMING, async () => {
             console.error(e)
         }
     })
-    */
 })
+

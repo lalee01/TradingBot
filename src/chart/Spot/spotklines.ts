@@ -29,9 +29,9 @@ export type Klines = {
     closeTime: number
 }
 
-const spotGetKlines = async (symbol:String , interval:String):Promise<Klines[]|undefined>  => {
+const spotGetKlines = async (symbol:String , interval:String , settings:Object):Promise<Klines[]|undefined>  => {
     try {
-        const klines = await BinanceClient.candlesticks(symbol, interval ,false ,{limit:5})
+        const klines = await BinanceClient.candlesticks(symbol, interval ,false ,settings)
         return await klines.map((kline: klineTupple[]) => {
             return {
                 openTime: kline[0],

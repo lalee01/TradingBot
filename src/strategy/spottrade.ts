@@ -1,10 +1,10 @@
 import { CandleList} from 'technicalindicators'
 import sendTelegramMessage from '../telegram/telegram'
 import {BinanceClient}  from '../binance/connection'
-import getKlines, { Klines } from './../binance/query/klines'
+import getKlines, { Klines } from '../binance/query/klines'
 import 'dotenv/config'
-import getHeikinAshi from './../chart/heikinAshi'
-import spotGetKlines from './../chart/Spot/spotklines'
+import getHeikinAshi from '../chart/heikinAshi'
+import spotGetKlines from '../chart/Spot/spotklines'
 
 type Options = {
     spotSymbol : String
@@ -38,12 +38,12 @@ const tradeInfo : TradeInfo = {
     profit:0
 }
 
-const freefeebtcspottrade = async ({spotSymbol}: Options) => {
+const spottrade = async ({spotSymbol}: Options) => {
     
-    const highKlines = await spotGetKlines(spotSymbol , "1h") ?? []
+    const highKlines = await spotGetKlines(spotSymbol , "1h" , {limit:50}) ?? []
     const highHeikinAshi = await getHeikinAshi(highKlines)
 
-    const lowKlines = await spotGetKlines(spotSymbol , "5m") ?? []
+    const lowKlines = await spotGetKlines(spotSymbol , "5m" , {limit:50}) ?? []
     const lowHeikinAshi = await getHeikinAshi(lowKlines)
 
     const indexOffset = []
@@ -57,8 +57,9 @@ const freefeebtcspottrade = async ({spotSymbol}: Options) => {
         indexOffset.push(-1)
     }  
 
-    const getPrice = await BinanceClient.prices(spotSymbol).catch((e:Error)=>console.log(e))
-    const actualPrice = Number(getPrice.BTCUSDT)
+    const getPrice = await BinanceClient.prices().catch((e:Error)=>console.log(e))
+     spotSymbol = String(spotSymbol)
+    const actualPrice = getPrice.spotSymbol
     
     const highIsItDoji = highHeikinAshi.newDoji.slice(-3)
     const highIsItBullish = highHeikinAshi.bullish.slice(-3)
@@ -91,15 +92,12 @@ const freefeebtcspottrade = async ({spotSymbol}: Options) => {
         tradeInfo.sellPrice = 0
         tradeInfo.profit = tradeInfo.profit + profit
     }
-
+    
+    console.log(spotSymbol)
+    console.log(new Date())
     console.log("Price:" , actualPrice)
-    console.log(profit , "%")
-    console.log(tradeInfo)
-    console.log()
-    console.log("highIsItDoji:" , highIsItDoji)
-    console.log("highIsItBullish:" , highIsItBullish)
-    console.log("lowIsItDoji:" , lowIsItDoji)
-    console.log("lowIsItBullish:" , lowIsItBullish)
+    console.log(getPrice.AVAXBUSD , spotSymbol)
+
 }
 
-export default freefeebtcspottrade
+export default spottrade
