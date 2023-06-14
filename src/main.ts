@@ -6,12 +6,13 @@ import spotGetKlines from './chart/Spot/spotklines'
 import trendfinder from './chart/trendfinder'
 import trendwb from './strategy/trendwb'
 
-
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
-const singleSymbol="ETHBUSD"
+const cronvalidate =  cron.validate(CRON_TIMING)
+console.log("Cron expression validator => " , cronvalidate)
 
+const singleSymbol="ETHBUSD"
 
 cron.schedule(CRON_TIMING, async () => {
 

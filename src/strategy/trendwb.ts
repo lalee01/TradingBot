@@ -14,24 +14,7 @@ type Options = {
 const risk = Number(process.env.RISK ?? 1)
 const reward = Number(process.env.REWARD ?? 2)
 
-const orderInfo = {
-    side : "SHORT",
-    sl : 0,
-    tp : 0
-}
-
 const trendwb = async ({klines,trend,symbol}: Options) => {
-    
-    const indexOffset = []
-    const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
-    const lastCandleCloseTime = klines[klines.length - 1].closeTime
-    
-    if (time.serverTime > lastCandleCloseTime) {
-        indexOffset.push(0)
-        
-    }else{
-        indexOffset.push(-1)
-    }  
     
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
@@ -69,9 +52,10 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log(symbol)
-    
-    console.log("Trigger : " , shortTradeTrigger)
-    console.log( "Trigger : " , longTradeTrigger)
+
+    console.log(trend[trend.length-1])
+    console.log("Short trigger : " , shortTradeTrigger , trend[trend.length-1].newTrend ,trend[trend.length-1].break)
+    console.log("Long trigger : " , longTradeTrigger , trend[trend.length-1].newTrend ,trend[trend.length-1].break)
 }
 
 export default trendwb
