@@ -30,11 +30,11 @@ const klinesLows : Array<klinesHL> = []
 const klinesHighs : Array<klinesHL> = []
 
 const trendfinder = async (inputData: Klines[]) => {
-
+    
     inputData.map((kline, index)=>{
-
+        
         const timeConverter = new Date(kline.openTime+7200000)
-
+        
         if(index-1 > 0 && index+1 < inputData.length){
 
             if (kline.lowPrice < inputData[index+1].lowPrice && kline.lowPrice < inputData[index-1].lowPrice && inputData[index+1].openPrice < inputData[index+1].closePrice && inputData[index-1].closePrice < inputData[index-1].openPrice){
@@ -44,10 +44,10 @@ const trendfinder = async (inputData: Klines[]) => {
                     openTime:timeConverter
                 })
 
-                if(klinesLows.length-1 > 0){
-
+                if(klinesHighs.length-2 > 0){
+                    
                     if(klinesLows[klinesLows.length-2].price > kline.lowPrice){
-
+                        
                         hlCollector.push({
                             highPrice:klinesHighs[klinesHighs.length-1].price,
                             lowPrice:klinesLows[klinesLows.length-1].price,
@@ -58,7 +58,7 @@ const trendfinder = async (inputData: Klines[]) => {
                     }
                     
                     if(klinesLows[klinesLows.length-2].price < kline.lowPrice){
-
+                        
                         hlCollector.push({
                             highPrice: klinesHighs[klinesHighs.length-1].price,
                             lowPrice:klinesLows[klinesLows.length-1].price,
@@ -77,10 +77,10 @@ const trendfinder = async (inputData: Klines[]) => {
                     openTime:timeConverter
                 })
 
-                if(klinesLows.length-1 > 0){
+                if(klinesLows.length-2 > 0){
 
                     if(klinesHighs[klinesHighs.length-2].price > kline.highPrice){
-
+                        
                         hlCollector.push({
                             highPrice: klinesHighs[klinesHighs.length-1].price,
                             lowPrice:klinesLows[klinesLows.length-1].price,
@@ -91,7 +91,7 @@ const trendfinder = async (inputData: Klines[]) => {
                     }
                     
                     if(klinesHighs[klinesHighs.length-2].price < kline.highPrice){
-
+                        
                         hlCollector.push({
                             highPrice: klinesHighs[klinesHighs.length-1].price,
                             lowPrice:klinesLows[klinesLows.length-1].price,
@@ -106,7 +106,7 @@ const trendfinder = async (inputData: Klines[]) => {
     })
 
     hlCollector.map((hl, index)=>{
-
+        
         if(index-1 > 0){
             
             if(hl.trend != hlCollector[index-1].trend){
@@ -130,7 +130,7 @@ const trendfinder = async (inputData: Klines[]) => {
     })
 
     return trendChange
-
+    
 }
 
 export default trendfinder

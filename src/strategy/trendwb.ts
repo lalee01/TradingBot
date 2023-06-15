@@ -15,26 +15,34 @@ const risk = Number(process.env.RISK ?? 1)
 const reward = Number(process.env.REWARD ?? 2)
 
 const trendwb = async ({klines,trend,symbol}: Options) => {
+
+    const indexOffset = []
+    const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
+    const lastCandleCloseTime = klines[klines.length - 1].closeTime
     
+    if (time.serverTime > lastCandleCloseTime) {
+        indexOffset.push(0)
+    }else{
+        indexOffset.push(-1)
+    }  
+    
+    const timeConverter = new Date(klines[klines.length - 2 + indexOffset[0]].openTime+7200000)
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
     
     const leverageCalc = (sl:number) => Number(Math.abs(risk/(sl/markPrice*100-100)).toFixed(0))
 
-    const shortTradeTrigger =  trend[trend.length-1].newTrend === "DOWN" && trend[trend.length-1].break 
-    const longTradeTrigger = trend[trend.length-1].newTrend === "UP" && trend[trend.length-1].break 
+    const shortTradeTrigger =  trend[trend.length-1].newTrend === "DOWN" && trend[trend.length-1].break && timeConverter === trend[trend.length-1].time
+    const longTradeTrigger = trend[trend.length-1].newTrend === "UP" && trend[trend.length-1].break && timeConverter === trend[trend.length-1].time
 
     const slLong = Number(trend[trend.length-1].latestLow)
-    const tpLong = Number(markPrice+(markPrice-slLong*reward))
+    const tpLong = Number(markPrice+((markPrice-slLong)*reward))
 
     const slShort = Number(trend[trend.length-1].latestHigh)
-    const tpShort = Number(markPrice-(slShort-markPrice*reward))
-    
-    //orderInfo.sl = orderInfo.side === "SHORT" ? Number(markPrice*(1+SL)) : Number(markPrice*(1-SL))
-    //orderInfo.tp = orderInfo.side === "SHORT" ? Number(markPrice*(1-TP)) : Number(markPrice*(1+TP))
+    const tpShort = Number(markPrice-((slShort-markPrice)*reward))
 
     if(shortTradeTrigger){
-        //orderInfo.side = "SHORT"
+
         const leverage = leverageCalc(slShort)
         //shortOrder({slShort , tpShort ,symbol,leverage})
         sendTelegramMessage(`${symbol} Short trade ${leverage}X : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
@@ -42,7 +50,7 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
     }
     
     if(longTradeTrigger){
-        //orderInfo.side = "LONG"
+
         const leverage = leverageCalc(slLong)
         //longOrder({slLong , tpLong ,symbol,leverage})
         sendTelegramMessage(`${symbol} Long trade ${leverage}X : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)}`)
@@ -54,6 +62,7 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
     console.log(symbol)
 
     console.log(trend[trend.length-1])
+    console.log(timeConverter , trend[trend.length-1].time)
     console.log("Short trigger : " , shortTradeTrigger , trend[trend.length-1].newTrend ,trend[trend.length-1].break)
     console.log("Long trigger : " , longTradeTrigger , trend[trend.length-1].newTrend ,trend[trend.length-1].break)
 }
