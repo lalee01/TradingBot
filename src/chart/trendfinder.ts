@@ -6,6 +6,7 @@ type hlCollectors = {
     openTime?: Date
     type?:String
     trend?:String
+    timestamp:number
 }
 
 type klinesHL = {
@@ -21,6 +22,7 @@ export type trend = {
     latestHigh:Number
     latestLow:Number
     break:Boolean
+    timestamp:number
 }
 
 const hlCollector : Array<hlCollectors> = []
@@ -47,13 +49,14 @@ const trendfinder = async (inputData: Klines[]) => {
                 if(klinesHighs.length-2 > 0){
                     
                     if(klinesLows[klinesLows.length-2].price > kline.lowPrice){
-                        
+
                         hlCollector.push({
                             highPrice:klinesHighs[klinesHighs.length-1].price,
                             lowPrice:klinesLows[klinesLows.length-1].price,
                             openTime:timeConverter,
                             type:'Lower Low',
-                            trend : 'DOWN'
+                            trend : 'DOWN',
+                            timestamp:kline.openTime
                         })
                     }
                     
@@ -64,7 +67,8 @@ const trendfinder = async (inputData: Klines[]) => {
                             lowPrice:klinesLows[klinesLows.length-1].price,
                             openTime:timeConverter,
                             type:'Higher Low',
-                            trend : 'UP'
+                            trend : 'UP',
+                            timestamp:kline.openTime
                         })
                     }
                 }
@@ -86,7 +90,8 @@ const trendfinder = async (inputData: Klines[]) => {
                             lowPrice:klinesLows[klinesLows.length-1].price,
                             openTime:timeConverter,
                             type:'Lower High',
-                            trend : 'DOWN'
+                            trend : 'DOWN',
+                            timestamp:kline.openTime
                         })
                     }
                     
@@ -97,7 +102,8 @@ const trendfinder = async (inputData: Klines[]) => {
                             lowPrice:klinesLows[klinesLows.length-1].price,
                             openTime:timeConverter,
                             type:'Higher High',
-                            trend : 'UP'
+                            trend : 'UP',
+                            timestamp:kline.openTime
                         })
                     }
                 }
@@ -115,7 +121,8 @@ const trendfinder = async (inputData: Klines[]) => {
                     time:hl.openTime,
                     latestHigh:hl.highPrice,
                     latestLow:hl.lowPrice,
-                    break:true
+                    break:true,
+                    timestamp:hl.timestamp
                 })
             }else{
                 trendChange.push({
@@ -123,7 +130,8 @@ const trendfinder = async (inputData: Klines[]) => {
                     time:hl.openTime,
                     latestHigh:hl.highPrice,
                     latestLow:hl.lowPrice,
-                    break:false
+                    break:false,
+                    timestamp:hl.timestamp
                 })
             }
         }

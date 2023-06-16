@@ -26,14 +26,17 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
         indexOffset.push(-1)
     }  
     
-    const timeConverter = new Date(klines[klines.length - 2 + indexOffset[0]].openTime+7200000)
+    const targetKlineOpen = klines[klines.length - 2 + indexOffset[0]].openTime
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
+
+    const timeConverter = new Date(klines[klines.length - 2 + indexOffset[0]].openTime+7200000)
+    const timeEqual = targetKlineOpen === trend[trend.length-1].timestamp
     
     const leverageCalc = (sl:number) => Number(Math.abs(risk/(sl/markPrice*100-100)).toFixed(0))
 
-    const shortTradeTrigger =  trend[trend.length-1].newTrend === "DOWN" && trend[trend.length-1].break && timeConverter === trend[trend.length-1].time
-    const longTradeTrigger = trend[trend.length-1].newTrend === "UP" && trend[trend.length-1].break && timeConverter === trend[trend.length-1].time
+    const shortTradeTrigger =  trend[trend.length-1].newTrend === "DOWN" && trend[trend.length-1].break && timeEqual
+    const longTradeTrigger = trend[trend.length-1].newTrend === "UP" && trend[trend.length-1].break && timeEqual
 
     const slLong = Number(trend[trend.length-1].latestLow)
     const tpLong = Number(markPrice+((markPrice-slLong)*reward))
@@ -62,9 +65,10 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
     console.log(symbol)
 
     console.log(trend[trend.length-1])
-    console.log(timeConverter , trend[trend.length-1].time)
-    console.log("Short trigger : " , shortTradeTrigger , trend[trend.length-1].newTrend ,trend[trend.length-1].break)
-    console.log("Long trigger : " , longTradeTrigger , trend[trend.length-1].newTrend ,trend[trend.length-1].break)
+    console.log(timeConverter)
+    console.log(targetKlineOpen ,trend[trend.length-1].timestamp)
+    console.log("Short trigger : " , shortTradeTrigger ,"=>", trend[trend.length-1].newTrend === "DOWN", timeEqual ,trend[trend.length-1].break)
+    console.log("Long trigger : " , longTradeTrigger ,"=>", trend[trend.length-1].newTrend === "UP", timeEqual ,trend[trend.length-1].break)
 }
 
 export default trendwb
