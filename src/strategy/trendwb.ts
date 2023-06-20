@@ -47,7 +47,7 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
     if(shortTradeTrigger){
 
         const leverage = leverageCalc(slShort)
-        //shortOrder({slShort , tpShort ,symbol,leverage})
+        shortOrder({slShort , tpShort ,symbol,leverage})
         sendTelegramMessage(`${symbol} Short trade ${leverage}X : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
        //sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice.toFixed(2)}`)
     }
@@ -55,7 +55,7 @@ const trendwb = async ({klines,trend,symbol}: Options) => {
     if(longTradeTrigger){
 
         const leverage = leverageCalc(slLong)
-        //longOrder({slLong , tpLong ,symbol,leverage})
+        longOrder({slLong , tpLong ,symbol,leverage})
         sendTelegramMessage(`${symbol} Long trade ${leverage}X : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)}`)
         //sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice.toFixed(2)}`)
     }
