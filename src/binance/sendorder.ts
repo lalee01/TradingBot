@@ -44,7 +44,7 @@ const account = async () => {
 const getActiveOrders = async () => {
   await account()
   await binance.futuresBalance().then(()=>{
-    if(accountInfo.balance <0.5){
+    if(accountInfo.balance <2){
       accountInfo.wasActiveOrder = true
     }else{
       accountInfo.wasActiveOrder = false
@@ -61,7 +61,7 @@ export const longOrder = async ({slLong , tpLong, symbol, leverage} : longProps)
   
   const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
 
-  const quantity = (12/getMarkPrice.markPrice).toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
+  const quantity = ((12/getMarkPrice.markPrice)*leverage).toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
   const convertedSL = slLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   const convertedTP = tpLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   
@@ -102,7 +102,7 @@ export const shortOrder = async ({slShort , tpShort ,symbol, leverage}:shortProp
   
   const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
   
-  const quantity = (12/getMarkPrice.markPrice).toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
+  const quantity = ((12/getMarkPrice.markPrice)*leverage).toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
   const convertedSL = slShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   const convertedTP = tpShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
 
