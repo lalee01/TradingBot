@@ -39,7 +39,7 @@ const trendfinder = async (inputData: Klines[]) => {
         
         if(index-1 > 0 && index+1 < inputData.length){
 
-            if (kline.lowPrice < inputData[index+1].lowPrice && kline.lowPrice < inputData[index-1].lowPrice && inputData[index+1].openPrice < inputData[index+1].closePrice && inputData[index-1].closePrice < inputData[index-1].openPrice){
+            if (kline.lowPrice < inputData[index+1].lowPrice && kline.lowPrice < inputData[index-1].lowPrice){
             
                 klinesLows.push({
                     price : kline.lowPrice,
@@ -74,7 +74,7 @@ const trendfinder = async (inputData: Klines[]) => {
                 }
             }
             
-            if (kline.highPrice > inputData[index+1].highPrice && kline.highPrice > inputData[index-1].highPrice && inputData[index+1].openPrice > inputData[index+1].closePrice && inputData[index-1].closePrice > inputData[index-1].openPrice){
+            if (kline.highPrice > inputData[index+1].highPrice && kline.highPrice > inputData[index-1].highPrice){
                 
                 klinesHighs.push({
                     price : kline.highPrice,
