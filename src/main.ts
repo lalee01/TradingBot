@@ -4,7 +4,8 @@ import getKlines from './binance/query/klines'
 import {BinanceClient}  from './binance/connection'
 import spotGetKlines from './chart/Spot/spotklines'
 import trendfinder from './chart/trendfinder'
-import trendwb from './strategy/trendwb'
+import trendwb  from './strategy/trendwb'
+import { account , accountInfo } from './binance/sendorder'
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')

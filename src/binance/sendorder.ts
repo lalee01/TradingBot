@@ -34,10 +34,11 @@ export const accountInfo = {
   quantityForTrade : 0
 }
 
-const account = async () => {
+export const account = async () => {
   await binance.useServerTime()
   await binance.futuresBalance().then((response : any)=>{
-    accountInfo.balance = response[8].availableBalance
+    console.log(response[11])
+    accountInfo.balance = response[11].availableBalance
   })
 }
 
