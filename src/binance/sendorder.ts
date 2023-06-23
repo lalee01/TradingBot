@@ -45,7 +45,7 @@ export const account = async () => {
 const getActiveOrders = async () => {
   await account()
   await binance.futuresBalance().then(()=>{
-    if(accountInfo.balance <2){
+    if(Number(accountInfo.balance) < 2){
       accountInfo.wasActiveOrder = true
     }else{
       accountInfo.wasActiveOrder = false
@@ -66,7 +66,7 @@ export const longOrder = async ({slLong , tpLong, symbol, leverage} : longProps)
   const convertedSL = slLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   const convertedTP = tpLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   
-  if(!accountInfo.wasActiveOrder) {
+  if(Number(accountInfo.balance) > 2) {
     await binance.useServerTime()
     await binance.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await binance.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
@@ -107,7 +107,7 @@ export const shortOrder = async ({slShort , tpShort ,symbol, leverage}:shortProp
   const convertedSL = slShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   const convertedTP = tpShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
 
-  if(!accountInfo.wasActiveOrder) {
+  if(Number(accountInfo.balance) > 2) {
     await binance.useServerTime()
     await binance.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await binance.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))

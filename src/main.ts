@@ -15,6 +15,12 @@ console.log("Cron expression validator => " , cronvalidate)
 
 const singleSymbol="ETHBUSD"
 
+const test = async ()=>{
+
+}
+
+test()
+
 cron.schedule(CRON_TIMING, async () => {
 
     multiCoin.map(async (symbol:String)=>{
