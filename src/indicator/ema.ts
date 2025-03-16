@@ -6,7 +6,7 @@ type Options = {
     smaPeriod?: number
 }
 
-const exponentialMovingAverage = (inputData: Klines[], { period = 200, smaPeriod = 5}: Options) => {
+const exponentialMovingAverage = (inputData: Klines[], { period = 50, smaPeriod = 5}: Options) => {
     const values = inputData.map(data => {
         return Number(data.closePrice)
     })

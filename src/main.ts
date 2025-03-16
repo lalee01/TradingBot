@@ -1,26 +1,34 @@
 import 'dotenv/config'
 import cron from 'node-cron'
 import getKlines from './binance/query/klines'
-import atrStopLossFinder from './indicator/AtrStopLossFinder'
 import stochasticRsi from './indicator/stochRsi'
 import getHeikinAshi from './chart/heikinAshi'
+import stochRsiStrategy from './strategy/stochRsiStrategy'
+import atrStopLossFinder from './indicator/AtrStopLossFinder'
+import {BinanceClient}  from './binance/connection'
 
+const CRON_TIMING = process.env.CRON_TIMING ?? ''
+const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
-cron.schedule('*/5 * * * * *', async () => {
+cron.schedule(CRON_TIMING, async () => {
 
-    try {
-        const klines = await getKlines() ?? []
-        const heikinAshi = await getHeikinAshi(klines)
-        const srsi = stochasticRsi(heikinAshi, {})
-    
+    multiCoin.map(async (symbol:String)=>{
 
-        console.log(srsi[srsi.length-1])
-        console.log(srsi[srsi.length-2])
-        console.log(srsi[srsi.length-3])
-
-
-        console.log("it is still running.")
-    } catch (e) {
-        console.error(e)
-    }
+            try {
+            const klines = await getKlines(symbol) ?? []
+            const heikinAshi = await getHeikinAshi(klines)
+            const atrSLF = await atrStopLossFinder(klines,{})
+            
+            stochRsiStrategy({
+                klines,
+                heikinAshi,
+                atrSLF,
+                symbol
+            })
+            
+            console.log("it is still running.")
+        } catch (e) {
+            console.error(e)
+        }
+    })
 })
