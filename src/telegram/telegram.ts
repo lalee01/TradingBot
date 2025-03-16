@@ -8,7 +8,6 @@ const API_HASH = process.env.API_HASH;
 const STRING_SESSION = process.env.STRING_SESSION; // leave this empty for now
 const BOT_TOKEN = process.env.BOT_TOKEN; // put your bot token here
 
-
 const sendTelegramMessage = async (msg: string) => {
     const client = new TelegramClient(new StringSession(STRING_SESSION), API_ID, API_HASH ?? '',{ connectionRetries: 5 });
 

@@ -92,5 +92,4 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol}: Options) 
                  "TP:" ,(atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier).toFixed(2)
                 )
 }
-
 export default stochRsiStrategy
