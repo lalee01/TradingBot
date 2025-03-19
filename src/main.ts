@@ -2,13 +2,17 @@ import 'dotenv/config'
 import cron from 'node-cron'
 import getKlines from './binance/query/klines'
 import stochasticRsi from './indicator/stochRsi'
-import getHeikinAshi from './chart/heikinAshi'
-import stochRsiStrategy from './strategy/stochRsiStrategy'
 import atrStopLossFinder from './indicator/AtrStopLossFinder'
 import {BinanceClient}  from './binance/connection'
+import newSrsiStrategy from './strategy/newsrsiStrategy'
+import { ema } from 'technicalindicators'
+import exponentialMovingAverage from './indicator/ema'
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
+const atrLength = Number(process.env.ATR_LENGTH)
+const emaLength = Number(process.env.EMA)
+const rsiLength = Number(process.env.RSI_LENGTH)
 
 cron.schedule(CRON_TIMING, async () => {
 
@@ -16,12 +20,12 @@ cron.schedule(CRON_TIMING, async () => {
 
             try {
             const klines = await getKlines(symbol) ?? []
-            const heikinAshi = await getHeikinAshi(klines)
-            const atrSLF = await atrStopLossFinder(klines,{})
+            const srsi = await stochasticRsi(klines , {rsiPeriod:rsiLength})
+            const atrSLF = await atrStopLossFinder(klines,{period:atrLength})
+            const ema = await exponentialMovingAverage(klines ,{period:emaLength})
             
-            stochRsiStrategy({
+            newSrsiStrategy({
                 klines,
-                heikinAshi,
                 atrSLF,
                 symbol
             })

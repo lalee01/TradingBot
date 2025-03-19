@@ -24,7 +24,7 @@ const orderInfo = {
     tp : 0
 }
 
-const stochRsiStrategy = async ({srsi , klines , emaPeriod , atrSLF,symbol}: Options) => {
+const newSrsiStrategy = async ({srsi , klines , emaPeriod , atrSLF,symbol}: Options) => {
 
     const srsiDLines : number[] = []
     const srsiKLines : number[] = []
@@ -87,4 +87,4 @@ const stochRsiStrategy = async ({srsi , klines , emaPeriod , atrSLF,symbol}: Opt
                 )
 }
 
-export default stochRsiStrategy
+export default newSrsiStrategy
