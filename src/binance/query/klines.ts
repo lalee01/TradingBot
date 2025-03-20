@@ -1,8 +1,6 @@
-import { BollingerBands, CrossDown } from 'technicalindicators'
 import { BinanceClient } from '../connection'
 import 'dotenv/config'
 
-const CRYPTO_PAIR = process.env.CRYPTO_PAIR
 const INTERVAL = process.env.INTERVAL
 
 
