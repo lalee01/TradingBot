@@ -8,6 +8,7 @@ const createConnection = () => {
        return new Binance().options({
         APIKEY: apiKey,
         APISECRET: apiSecret,
+        'family': 4,
       });
     } catch (e) {
         console.error(e)

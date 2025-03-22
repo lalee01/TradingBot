@@ -10,7 +10,6 @@ const exponentialMovingAverage = (inputData: Klines[], { period = 50, smaPeriod 
     const values = inputData.map(data => {
         return Number(data.closePrice)
     })
-    
 
     return sma({period: smaPeriod, values: ema({period, values})})
 }

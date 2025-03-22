@@ -23,6 +23,11 @@ const coinSettings = [
         symbol:'APEBUSD',
         price:3,
         quantity:1
+    },
+    {
+        symbol:'SOLUSDC',
+        price:3,
+        quantity:1
     }
 ]
 
