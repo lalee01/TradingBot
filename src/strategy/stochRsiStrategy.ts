@@ -55,10 +55,10 @@ const stochRsiStrategy = async ({klines , heikinAshi , atrSLF,symbol}: Options) 
     const shortTradeTrigger =  isItDoji[isItDoji.length-2+indexOffset[0]] && isItBearish[isItBearish.length-1+indexOffset[0]]
     const longTradeTrigger = isItDoji[isItDoji.length-2+indexOffset[0]] && isItBullish[isItBullish.length-1+indexOffset[0]]
     
-    const slLong = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
-    const tpLong = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
-    const slShort = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
-    const tpShort = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
+    const slLong = Number(markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier)
+    const tpLong = Number(markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier)
+    const slShort = Number(markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier)
+    const tpShort = Number(markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier)
     
     //orderInfo.sl = orderInfo.side === "SHORT" ? Number(markPrice*(1+SL)) : Number(markPrice*(1-SL))
     //orderInfo.tp = orderInfo.side === "SHORT" ? Number(markPrice*(1-TP)) : Number(markPrice*(1+TP))

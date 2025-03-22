@@ -5,6 +5,7 @@ import sendTelegramMessage from './../telegram/telegram'
 import 'dotenv/config'
 import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/StochasticRSI'
 import { longOrder, shortOrder } from './../binance/sendorder'
+import { off } from 'process'
 
 type Options = {
     srsi: StochasticRSIOutput[]
@@ -14,8 +15,8 @@ type Options = {
     symbol: String
 }
 
-const SLmultiplier = Number(process.env.RISK ?? 1)
-const TPmultiplier = Number(process.env.REWARD ?? 2)
+const risk = Number(process.env.RISK ?? 1)
+const reward = Number(process.env.REWARD ?? 2)
 
 const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Options) => {
 
@@ -29,27 +30,25 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const even = (element:Boolean) => element === true
     const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
-    const indexOffset = []
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
-    const lastCandleCloseTime = klines[klines.length - 1].closeTime
     
-    if (time.serverTime > lastCandleCloseTime) {
-        indexOffset.push(0)
-        
-    }else{
-        indexOffset.push(-1)
-    }  
+    const lastItemIndex=(item:number[]| object[])=>{
+        const lastCandleCloseTime = klines[klines.length - 1].closeTime
+        let offset = 0
+        time.serverTime > lastCandleCloseTime ? offset = 0 : offset = -1
+        return item.length-1+offset
+    }
     
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
     
-    const shortTradeTrigger =  lastema > markPrice && crossedShort.some(even)
-    const longTradeTrigger = lastema < markPrice && crossedLong.some(even)
+    const shortTradeTrigger =  lastema > markPrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80
+    const longTradeTrigger = lastema < markPrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20
     
-    const slLong = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
-    const tpLong = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
-    const slShort = Number((markPrice + atrSLF[atrSLF.length-1+indexOffset[0]].atr * SLmultiplier))
-    const tpShort = Number((markPrice - atrSLF[atrSLF.length-1+indexOffset[0]].atr * TPmultiplier))
+    const slLong = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * risk)
+    const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
+    const slShort = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * risk)
+    const tpShort = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * reward)
     
 
     if(shortTradeTrigger){
@@ -71,8 +70,11 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     console.log( "EMA : " , lastema)
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
-    
-    console.log("ATR:",(atrSLF[atrSLF.length-1+indexOffset[0]].atr).toFixed(2))
+    console.log("crossedShort : " , crossedShort)
+    console.log("crossedLong : " , crossedLong)
+    console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
+    console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
+    console.log("ATR:",(atrSLF[lastItemIndex(atrSLF)].atr).toFixed(2) ,"TP:" , reward)
 }
 
 export default newSrsiStrategy
