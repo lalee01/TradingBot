@@ -5,7 +5,7 @@ import sendTelegramMessage from './../telegram/telegram'
 import 'dotenv/config'
 import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/StochasticRSI'
 import { longOrder, shortOrder } from './../binance/sendorder'
-import riskManagement from 'src/binance/riskmanagement'
+import riskManagement from './../binance/riskmanagement'
 
 type Options = {
     srsi: StochasticRSIOutput[]
