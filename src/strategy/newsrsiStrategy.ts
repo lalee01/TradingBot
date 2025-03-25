@@ -1,11 +1,11 @@
-import { crossDown, crossUp , doji } from 'technicalindicators'
+import { crossDown, crossUp} from 'technicalindicators'
 import {BinanceClient}  from './../binance/connection'
 import { Klines } from './../binance/query/klines'
 import sendTelegramMessage from './../telegram/telegram'
 import 'dotenv/config'
 import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/StochasticRSI'
 import { longOrder, shortOrder } from './../binance/sendorder'
-import { off } from 'process'
+import riskManagement from 'src/binance/riskmanagement'
 
 type Options = {
     srsi: StochasticRSIOutput[]
@@ -27,12 +27,13 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
         srsiDLines.push(item.d)
         srsiKLines.push(item.k)
     })
+
     const even = (element:Boolean) => element === true
     const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
     
-    const lastItemIndex=(item:number[]| object[])=>{
+    const lastItemIndex=(item:number[] | object[])=>{
         const lastCandleCloseTime = klines[klines.length - 1].closeTime
         let offset = 0
         time.serverTime > lastCandleCloseTime ? offset = 0 : offset = -1
@@ -49,21 +50,20 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
     const slShort = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * risk)
     const tpShort = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * reward)
+    const sizeLong = riskManagement({entryPrice:markPrice,stoplossPrice:slLong,availableBalance:5000})
+    const sizeShort = riskManagement({entryPrice:markPrice,stoplossPrice:slShort,availableBalance:5000})
     
 
     if(shortTradeTrigger){
-
         //shortOrder({slShort , tpShort ,symbol})
-        sendTelegramMessage(`${symbol} Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
-
+        sendTelegramMessage(`${sizeShort.toFixed(2)},${symbol} Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
     }
     
     if(longTradeTrigger){
- 
         //longOrder({slLong , tpLong ,symbol})
-       sendTelegramMessage(`${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)} `)
-
+       sendTelegramMessage(`${sizeLong.toFixed(2)} , ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)} `)
     }
+
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log(symbol)
