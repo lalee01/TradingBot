@@ -26,8 +26,13 @@ const coinSettings = [
     },
     {
         symbol:'SOLUSDC',
-        price:3,
-        quantity:1
+        price:2,
+        quantity:3
+    },
+    {
+        symbol:'BNBUSDC',
+        price:2,
+        quantity:3
     }
 ]
 

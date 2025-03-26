@@ -34,6 +34,7 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
     
     const lastItemIndex=(item:number[] | object[])=>{
+
         const lastCandleCloseTime = klines[klines.length - 1].closeTime
         let offset = 0
         time.serverTime > lastCandleCloseTime ? offset = 0 : offset = -1
@@ -56,12 +57,12 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
 
     if(shortTradeTrigger){
         //shortOrder({slShort , tpShort ,symbol})
-        sendTelegramMessage(`${sizeShort.toFixed(2)},${symbol} Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
+        sendTelegramMessage(`${sizeShort.toFixed(3)},${symbol} Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(2)} , TP: ${tpShort.toFixed(2)}`)
     }
     
     if(longTradeTrigger){
         //longOrder({slLong , tpLong ,symbol})
-       sendTelegramMessage(`${sizeLong.toFixed(2)} , ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)} `)
+       sendTelegramMessage(`${sizeLong.toFixed(3)} , ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
     }
 
     console.log("-----------------------------------------------------")
