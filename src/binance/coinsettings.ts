@@ -8,7 +8,7 @@ const coinSettings = [
         symbol:'BNBBUSD',
         price:2,
         quantity:2
-    },,
+    },
     {
         symbol:'LTCBUSD',
         price:2,
