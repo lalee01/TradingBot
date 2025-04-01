@@ -10,6 +10,7 @@
     "start": "npm run build && NODE_ENV=production node dist/main.js",
     "dev-vite": "vite",
     "build-vite": "tsc && vite build",
+    "get-coin-info": "npm run build && node --inspect dist/binance/getcoinsettings.js",
     "preview": "vite preview"
   },
   "author": "",
