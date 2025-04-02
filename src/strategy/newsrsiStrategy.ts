@@ -70,14 +70,14 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log(symbol)
-    console.log( "EMA : " , lastema)
+   //console.log( "EMA : " , lastema)
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
     console.log("crossedShort : " , crossedShort)
     console.log("crossedLong : " , crossedLong)
-    console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
-    console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
-    console.log("ATR:",(atrSLF[lastItemIndex(atrSLF)].atr).toFixed(2) ,"TP:" , reward)
+   //console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
+    //console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
+    //console.log("ATR:",(atrSLF[lastItemIndex(atrSLF)].atr).toFixed(2) ,"TP:" , reward)
 }
 
 export default newSrsiStrategy

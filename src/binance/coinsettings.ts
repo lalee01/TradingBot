@@ -18,7 +18,7 @@ const coinSettings = [
         symbol:'NEARUSDC',
         price:4,
         quantity:0
-    },
+    }
 ]
 
 export default coinSettings
