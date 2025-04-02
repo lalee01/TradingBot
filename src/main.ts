@@ -19,13 +19,18 @@ sendTelegramMessage("Bot Started");
 
 cron.schedule(CRON_TIMING, async () => {
 
-    const even = (element:Boolean) => element.entryPrice > 0
+    const even = (element:Object) => element.entryPrice > 0
+    await BinanceClient.useServerTime()
     const activeOrders = await BinanceClient.futuresPositionRisk().then((response : any)=>response)
 
     if(activeOrders.some(even)){
+        console.log("-----------------------------------------------------")
         console.log("Active Order")
+        console.log("-----------------------------------------------------")
     }else{
+        console.log("-----------------------------------------------------")
         console.log("Looking for Trade")
+        console.log("-----------------------------------------------------")
         multiCoin.map(async (symbol:String)=>{
             try {
                 const klines = await getKlines(symbol) ?? []

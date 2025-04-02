@@ -18,6 +18,7 @@ type Options = {
 
 const risk = Number(process.env.RISK ?? 1)
 const reward = Number(process.env.REWARD ?? 2)
+const atrMultiplierSL = Number(process.env.ATR_MULTIPLIER_SL ?? 1)
 
 const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Options) => {
 
@@ -49,35 +50,35 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const shortTradeTrigger =  lastema > markPrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80
     const longTradeTrigger = lastema < markPrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20
     
-    const slLong = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * risk)
+    const slLong = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * atrMultiplierSL)
     const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
-    const slShort = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * risk)
+    const slShort = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * atrMultiplierSL)
     const tpShort = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * reward)
     const sizeLong = riskManagement({entryPrice:markPrice,stoplossPrice:slLong,availableBalance:balance})
     const sizeShort = riskManagement({entryPrice:markPrice,stoplossPrice:slShort,availableBalance:balance})
     const leverage =Number(((markPrice*sizeLong)/balance).toFixed(0)+1)
 
     if(shortTradeTrigger){
-        shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage})
         sendTelegramMessage(`Size: ${sizeShort.toFixed(3)},Leverage:${leverage}, ${symbol}, Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(2)} , TP: ${tpShort.toFixed(2)}`)
+        shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage})
     }
     
     if(longTradeTrigger){
+        sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
         longOrder({slLong , tpLong ,symbol ,sizeLong ,leverage})
-       sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
     }
 
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log(symbol)
-   //console.log( "EMA : " , lastema)
+    //console.log( "EMA : " , lastema)
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
-    console.log("crossedShort : " , crossedShort)
-    console.log("crossedLong : " , crossedLong)
-   //console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
+    //console.log("crossedShort : " , crossedShort)
+    //console.log("crossedLong : " , crossedLong)
+    //console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
     //console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
-    //console.log("ATR:",(atrSLF[lastItemIndex(atrSLF)].atr).toFixed(2) ,"TP:" , reward)
+    console.log("ATR:",(atrSLF.atr))
 }
 
 export default newSrsiStrategy

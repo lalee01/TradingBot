@@ -61,8 +61,6 @@ export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage} : 
 
 export const shortOrder = async ({slShort , tpShort ,symbol, sizeShort,leverage}:shortProps) =>{
 
-  const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol)
-  
   const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
   
   const quantityToOrder = sizeShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
