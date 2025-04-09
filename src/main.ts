@@ -30,6 +30,7 @@ cron.schedule(CRON_TIMING, async () => {
             console.log("Active Order" , symbol)
         }else{
             console.log("Looking for Trade" , symbol)
+
             try {
                 const klines = await getKlines(symbol) ?? []
                 const convKlines = klinesConverter(klines)
