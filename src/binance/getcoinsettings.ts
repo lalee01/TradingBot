@@ -26,20 +26,18 @@ type coinSettings = {
             pricePrecision:element.pricePrecision,
             quantityPrecision:element.quantityPrecision,
             priceFilter:element.filters[0],
-            lotFilter:element.filters[1]
+            lotFilter:element.filters[1],
         }
         coinSettings.push(oneSymbolInfo)
     })
 
     const jsonData = JSON.stringify(coinSettings, null, 2);
 
-    fs.writeFile("./src/binance/coinsettings.json", jsonData, 'utf8', (err) => {
+    fs.writeFile("./src/binance/coinsettings2.json", jsonData, 'utf8', (err) => {
         if (err) {
             console.error('Error writing to file', err);
         } else {
             console.log('Data written to file');
         }
     })
-    console.log(coinSettings)
-
 })()

@@ -19,19 +19,18 @@ sendTelegramMessage("Bot Started");
 
 cron.schedule(CRON_TIMING, async () => {
 
-    const even = (element:Object) => element.entryPrice > 0
-    await BinanceClient.useServerTime()
     const activeOrders = await BinanceClient.futuresPositionRisk().then((response : any)=>response)
+    await BinanceClient.useServerTime()
+    
+    multiCoin.map(async (symbol:String)=>{
 
-    if(activeOrders.some(even)){
-        console.log("-----------------------------------------------------")
-        console.log("Active Order")
-        console.log("-----------------------------------------------------")
-    }else{
-        console.log("-----------------------------------------------------")
-        console.log("Looking for Trade")
-        console.log("-----------------------------------------------------")
-        multiCoin.map(async (symbol:String)=>{
+        const indexFinder = (element) => element.symbol === symbol
+    
+        if(activeOrders.findIndex(indexFinder).entryPrice > 0){
+            console.log("Active Order" , symbol)
+        }else{
+            console.log("Looking for Trade" , symbol)
+
             try {
                 const klines = await getKlines(symbol) ?? []
                 const convKlines = klinesConverter(klines)
@@ -47,11 +46,9 @@ cron.schedule(CRON_TIMING, async () => {
                     symbol,
                     lastema
                 })
-                
-                console.log("it is still running.")
             } catch (e) {
                 console.error(e)
             }
-        })
-    }
+        }
+    })
 })
