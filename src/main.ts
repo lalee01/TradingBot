@@ -20,6 +20,7 @@ sendTelegramMessage("Bot Started");
 cron.schedule(CRON_TIMING, async () => {
 
     const activeOrders = await BinanceClient.futuresPositionRisk().then((response : any)=>response)
+    await BinanceClient.useServerTime()
     
     multiCoin.map(async (symbol:String)=>{
 
