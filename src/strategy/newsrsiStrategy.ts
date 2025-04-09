@@ -58,13 +58,13 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const leverage =Number(((markPrice*sizeLong)/balance).toFixed(0)+1)
 
     if(shortTradeTrigger){
-        shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage})
         sendTelegramMessage(`Size: ${sizeShort.toFixed(3)},Leverage:${leverage}, ${symbol}, Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(2)} , TP: ${tpShort.toFixed(2)}`)
+        shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage})
     }
     
     if(longTradeTrigger){
+        sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
         longOrder({slLong , tpLong ,symbol ,sizeLong ,leverage})
-       sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
     }
 
     console.log("-----------------------------------------------------")

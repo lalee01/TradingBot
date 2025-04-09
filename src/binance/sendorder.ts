@@ -26,15 +26,16 @@ type coinSettingsPrefix = {
 }
 
 export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage} : longProps) =>{
-
+  
   const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
-
+  
   const quantityToOrder = sizeLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
+  console.log(quantityToOrder)
   const convertedSL = slLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   const convertedTP = tpLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   
     await BinanceClient.useServerTime()
-    await BinanceClient.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
+    //await BinanceClient.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await BinanceClient.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
     await BinanceClient.futuresMarketBuy( symbol, quantityToOrder ).then((res:any) => console.log(res))
     
@@ -61,8 +62,6 @@ export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage} : 
 
 export const shortOrder = async ({slShort , tpShort ,symbol, sizeShort,leverage}:shortProps) =>{
 
-  const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol)
-  
   const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
   
   const quantityToOrder = sizeShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
@@ -70,7 +69,7 @@ export const shortOrder = async ({slShort , tpShort ,symbol, sizeShort,leverage}
   const convertedTP = tpShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
 
     await BinanceClient.useServerTime()
-    await BinanceClient.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
+    //await BinanceClient.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await BinanceClient.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
     await BinanceClient.futuresMarketSell( symbol, quantityToOrder ).then((res:any) => console.log(res))
     
