@@ -40,4 +40,13 @@ type coinSettings = {
             console.log('Data written to file');
         }
     })
+    fs.readFile("./src/binance/coinsettings2.json" , (error , data )=>{
+
+        if(error){
+            console.log(error)
+        }
+
+        const coinSettings = JSON.parse(data)
+        console.log(coinSettings[158])
+    })
 })()
