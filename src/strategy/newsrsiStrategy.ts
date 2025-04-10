@@ -78,7 +78,7 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     //console.log("crossedLong : " , crossedLong)
     //console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
     //console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
-    console.log("ATR:",(atrSLF.atr))
+    //console.log("ATR:",(atrSLF.atr))
 }
 
 export default newSrsiStrategy

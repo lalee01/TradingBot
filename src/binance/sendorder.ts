@@ -30,7 +30,6 @@ export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage} : 
   const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
   
   const quantityToOrder = sizeLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
-  console.log(quantityToOrder)
   const convertedSL = slLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   const convertedTP = tpLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
   
