@@ -21,12 +21,13 @@ cron.schedule(CRON_TIMING, async () => {
 
     const activeOrders = await BinanceClient.futuresPositionRisk().then((response : any)=>response)
     await BinanceClient.useServerTime()
+    //console.log(activeOrders)
     
     multiCoin.map(async (symbol:String)=>{
 
         const indexFinder = (element) => element.symbol === symbol
     
-        if(activeOrders.findIndex(indexFinder).entryPrice > 0){
+        if(activeOrders[activeOrders.findIndex(indexFinder)].entryPrice > 0){
             console.log("Active Order" , symbol)
         }else{
             console.log("Looking for Trade" , symbol)
