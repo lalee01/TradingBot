@@ -16,9 +16,9 @@ type Options = {
     symbol: String
 }
 
-const risk = Number(process.env.RISK ?? 1)
 const reward = Number(process.env.REWARD ?? 2)
 const atrMultiplierSL = Number(process.env.ATR_MULTIPLIER_SL ?? 1)
+const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 
 const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Options) => {
 
@@ -54,9 +54,9 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
     const slShort = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * atrMultiplierSL)
     const tpShort = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * reward)
-    const sizeLong = riskManagement({entryPrice:markPrice,stoplossPrice:slLong,availableBalance:balance})
-    const sizeShort = riskManagement({entryPrice:markPrice,stoplossPrice:slShort,availableBalance:balance})
-    const leverage =Number(((markPrice*sizeLong)/balance).toFixed(0)+1)
+    const sizeLong = riskManagement({entryPrice:markPrice,stoplossPrice:slLong,availableBalance:balance.balance})
+    const sizeShort = riskManagement({entryPrice:markPrice,stoplossPrice:slShort,availableBalance:balance.balance})
+    const leverage =Number(((markPrice*sizeLong)/balance.availableBalance*multiCoin.length).toFixed(0))+1
 
     if(shortTradeTrigger){
         sendTelegramMessage(`Size: ${sizeShort.toFixed(3)},Leverage:${leverage}, ${symbol}, Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(2)} , TP: ${tpShort.toFixed(2)}`)

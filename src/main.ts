@@ -18,10 +18,14 @@ const rsiLength = Number(process.env.RSI_LENGTH);
 sendTelegramMessage("Bot Started");
 
 cron.schedule(CRON_TIMING, async () => {
-
-    const activeOrders = await BinanceClient.futuresPositionRisk().then((response : any)=>response)
     await BinanceClient.useServerTime()
-    //console.log(activeOrders)
+
+    const activeOrders = await BinanceClient.futuresPositionRisk().then((response : any)=>{
+        if(response.msg){
+            console.info("\x1b[31m" + response.msg)
+        }
+        return response
+    })
     
     multiCoin.map(async (symbol:String)=>{
 

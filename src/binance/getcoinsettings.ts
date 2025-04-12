@@ -10,6 +10,7 @@ type coinSettings = {
     quantityPrecision:number
     priceFilter:Object
     lotFilter:Object
+    marketLotFilter:Object
 }
 
 (async () =>{
@@ -27,6 +28,7 @@ type coinSettings = {
             quantityPrecision:element.quantityPrecision,
             priceFilter:element.filters[0],
             lotFilter:element.filters[1],
+            marketLotFilter:element.filters[2]
         }
         coinSettings.push(oneSymbolInfo)
     })
