@@ -19,6 +19,7 @@ type Options = {
 const reward = Number(process.env.REWARD ?? 2)
 const atrMultiplierSL = Number(process.env.ATR_MULTIPLIER_SL ?? 1)
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
+const minKDDiff = Number(process.env.KDDIFF ?? 1)
 
 const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Options) => {
 
@@ -46,9 +47,10 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
+    const kdDiffcalc = Math.abs(srsiKLines[lastItemIndex(srsiKLines)] - srsiDLines[lastItemIndex(srsiDLines)]) > minKDDiff
     
-    const shortTradeTrigger =  lastema > markPrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80
-    const longTradeTrigger = lastema < markPrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20
+    const shortTradeTrigger =  lastema > markPrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80 && kdDiffcalc
+    const longTradeTrigger = lastema < markPrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20 && kdDiffcalc
     
     const slLong = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * atrMultiplierSL)
     const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
@@ -78,7 +80,7 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     //console.log("crossedLong : " , crossedLong)
     //console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
     //console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
-    //console.log("ATR:",(atrSLF.atr))
+    console.log("ATR:",(atrSLF.atr))
 }
 
 export default newSrsiStrategy

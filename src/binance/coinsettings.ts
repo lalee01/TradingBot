@@ -18,6 +18,11 @@ const coinSettings = [
         symbol:'NEARUSDC',
         price:4,
         quantity:0
+    },
+    {
+        symbol:'ADAUSDC',
+        price:4,
+        quantity:1
     }
 ]
 
