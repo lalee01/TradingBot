@@ -42,7 +42,7 @@ cron.schedule(CRON_TIMING, async () => {
                 const srsi = await stochasticRsi(convKlines , {rsiPeriod:rsiLength , kPeriod:3 , dPeriod:3})
                 const atrSLF = await atrStopLossFinder(klines,{period:atrLength , multiplier:1})
                 const ema = await exponentialMovingAverage(klines ,{period:emaLength, smaPeriod:1})
-                const lastema = Number(ema[ema.length-1].toFixed(2))
+                const lastema = Number(ema[ema.length-1])
                 
                 newSrsiStrategy({
                     srsi,

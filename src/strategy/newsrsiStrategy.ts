@@ -47,10 +47,11 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     
     const getMarkPrice = await BinanceClient.futuresMarkPrice(symbol).catch((e:Error)=>console.log(e))
     const markPrice = Number(getMarkPrice.markPrice)
+    const lastClosePrice = Number(klines[lastItemIndex(klines)].closePrice)
     const kdDiffcalc = Math.abs(srsiKLines[lastItemIndex(srsiKLines)] - srsiDLines[lastItemIndex(srsiDLines)]) > minKDDiff
     
-    const shortTradeTrigger =  lastema > markPrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80 && kdDiffcalc
-    const longTradeTrigger = lastema < markPrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20 && kdDiffcalc
+    const shortTradeTrigger =  lastema > lastClosePrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80 && kdDiffcalc
+    const longTradeTrigger = lastema < lastClosePrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20 && kdDiffcalc
     
     const slLong = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * atrMultiplierSL)
     const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
@@ -61,26 +62,27 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const leverage =Number(((markPrice*sizeLong)/balance.availableBalance*multiCoin.length).toFixed(0))+1
 
     if(shortTradeTrigger){
-        sendTelegramMessage(`Size: ${sizeShort.toFixed(3)},Leverage:${leverage}, ${symbol}, Short trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slShort.toFixed(2)} , TP: ${tpShort.toFixed(2)}`)
+        sendTelegramMessage(`Size: ${sizeShort.toFixed(3)},Leverage:${leverage}, ${symbol}, Short trade : Mark Price :${markPrice.toFixed(3)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
         shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage})
     }
     
     if(longTradeTrigger){
-        sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(2)} , SL: ${slLong.toFixed(2)} , TP: ${tpLong.toFixed(2)} `)
+        sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(3)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)} `)
         longOrder({slLong , tpLong ,symbol ,sizeLong ,leverage})
     }
 
     console.log("-----------------------------------------------------")
     console.log(new Date())
     console.log(symbol)
-    //console.log( "EMA : " , lastema)
+    console.log( "lastClosePrice : " , lastClosePrice)
+    console.log( "EMA : " , lastema)
     console.log("Trigger : " , shortTradeTrigger)
     console.log( "Trigger : " , longTradeTrigger)
     //console.log("crossedShort : " , crossedShort)
     //console.log("crossedLong : " , crossedLong)
     //console.log("srsiDLines : " , srsiDLines[lastItemIndex(srsiDLines)])
     //console.log("srsiKLines : " , srsiKLines[lastItemIndex(srsiKLines)])
-    console.log("ATR:",(atrSLF.atr))
+    //console.log("ATR:",(atrSLF.atr))
 }
 
 export default newSrsiStrategy

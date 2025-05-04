@@ -11,6 +11,7 @@
     "dev-vite": "vite",
     "build-vite": "tsc && vite build",
     "get-coin-info": "npm run build && node dist/binance/getcoinsettings.js",
+    "test": "npm run build && node dist/binance/test.js",
     "preview": "vite preview"
   },
   "author": "",
