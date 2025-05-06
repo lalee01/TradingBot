@@ -31,13 +31,12 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
         srsiKLines.push(item.k)
     })
 
-    const even = (element:Boolean) => element === true
     const crossedShort = crossDown({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
     const crossedLong = crossUp({lineA : srsiKLines , lineB : srsiDLines}).slice(-3)
     const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
     const balance = await getBalance("USDC")
     
-    const lastItemIndex=(item:number[] | object[])=>{
+    const lastItemIndex=(item:number[] | object[] | boolean[])=>{
 
         const lastCandleCloseTime = klines[klines.length - 1].closeTime
         let offset = 0
@@ -50,8 +49,8 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const lastClosePrice = Number(klines[lastItemIndex(klines)].closePrice)
     const kdDiffcalc = Math.abs(srsiKLines[lastItemIndex(srsiKLines)] - srsiDLines[lastItemIndex(srsiDLines)]) > minKDDiff
     
-    const shortTradeTrigger =  lastema > lastClosePrice && crossedShort.some(even) && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80 && kdDiffcalc
-    const longTradeTrigger = lastema < lastClosePrice && crossedLong.some(even) && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20 && kdDiffcalc
+    const shortTradeTrigger =  lastema > lastClosePrice && crossedShort[lastItemIndex(crossedShort)] && srsiDLines[lastItemIndex(srsiDLines)]>80 && srsiKLines[lastItemIndex(srsiKLines)]>80 && kdDiffcalc
+    const longTradeTrigger = lastema < lastClosePrice && crossedLong[lastItemIndex(crossedLong)] && srsiDLines[lastItemIndex(srsiDLines)]<20 && srsiKLines[lastItemIndex(srsiKLines)]<20 && kdDiffcalc
     
     const slLong = Number(markPrice - atrSLF[lastItemIndex(atrSLF)].atr * atrMultiplierSL)
     const tpLong = Number(markPrice + atrSLF[lastItemIndex(atrSLF)].atr * reward)
