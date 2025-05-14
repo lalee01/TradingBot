@@ -1,9 +1,7 @@
-import { BinanceClient } from "./connection.js"
-import getKlines from "./query/klines.js"
-import {coinSettings} from "./getcoinsettings.js"
+
+import coinSettings from "./coinsettings.js"
 
 (async () =>{
-    const time = await BinanceClient.useServerTime().catch((err:Error)=>console.log(err))
-    const klines = await getKlines("ADAUSDC") ?? []
-    console.log(coinSettings())
+    console.log("test:",await coinSettings());
+
 })()

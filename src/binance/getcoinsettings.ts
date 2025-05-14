@@ -2,27 +2,20 @@ import { BinanceClient } from "./connection.js"
 import fs from "fs"
 import 'dotenv/config'
 
-type coinSettings = {
+export type coinSettingstype = {
     symbol:string
-    pair:string
-    baseAsset:string
-    quoteAsset:string
-    pricePrecision:number
-    quantityPrecision:number
-    priceFilter:Object
-    lotFilter:Object
-    marketLotFilter:Object
+    price:number
+    quantity:number
 }
 
 const re = RegExp(".0*1" );
 
-
 (async () =>{
     const info:Array<any>=[]
-    const coinSettings :Array<coinSettings>=[]
+    const coinSettings :Array<coinSettingstype>=[]
     await BinanceClient.futuresExchangeInfo().then((response:Promise<Array>)=>info.push(response.symbols));
 
-    info[0].map((element:any)=>{
+    info[0].map((element:string)=>{
 
         const counter = (size:number)=>{
             let precision = []

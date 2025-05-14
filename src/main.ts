@@ -16,9 +16,10 @@ const atrLength = Number(process.env.ATR_LENGTH)
 const emaLength = Number(process.env.EMA)
 const rsiLength = Number(process.env.RSI_LENGTH);
 
-console.log(coinSettings)
-
-sendTelegramMessage(`Bot Started with :`);
+(async () =>{
+    const coinSetting =await coinSettings()
+    sendTelegramMessage(`Bot Started with :${JSON.stringify(coinSetting)}`);
+})()
 
 cron.schedule(CRON_TIMING, async () => {
     await BinanceClient.useServerTime()
