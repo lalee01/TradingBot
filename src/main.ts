@@ -16,10 +16,8 @@ const atrLength = Number(process.env.ATR_LENGTH)
 const emaLength = Number(process.env.EMA)
 const rsiLength = Number(process.env.RSI_LENGTH);
 
-(async () =>{
-    const coinSetting =await coinSettings()
-    sendTelegramMessage(`Bot Started with :${JSON.stringify(coinSetting)}`);
-})()
+const coinSetting =coinSettings()
+sendTelegramMessage(`Bot Started with :${JSON.stringify(coinSetting)}`);
 
 cron.schedule(CRON_TIMING, async () => {
     await BinanceClient.useServerTime()
@@ -53,7 +51,8 @@ cron.schedule(CRON_TIMING, async () => {
                     klines,
                     atrSLF,
                     symbol,
-                    lastema
+                    lastema,
+                    coinSetting
                 })
             } catch (e) {
                 console.error(e)

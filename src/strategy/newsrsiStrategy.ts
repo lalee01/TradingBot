@@ -7,6 +7,7 @@ import { StochasticRSIOutput } from 'technicalindicators/declarations/momentum/S
 import { longOrder, shortOrder } from './../binance/sendorder'
 import riskManagement from './../binance/riskmanagement'
 import getBalance from './../binance/getbalance'
+import { coinSettingstype } from 'src/binance/getcoinsettings'
 
 type Options = {
     srsi: StochasticRSIOutput[]
@@ -14,6 +15,7 @@ type Options = {
     lastema:number
     atrSLF: Array <{high:number , low:number , atr:number}>
     symbol: String
+    coinSetting: coinSettingstype[]
 }
 
 const reward = Number(process.env.REWARD ?? 2)
@@ -21,7 +23,7 @@ const atrMultiplierSL = Number(process.env.ATR_MULTIPLIER_SL ?? 1)
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
 const minKDDiff = Number(process.env.KDDIFF ?? 1)
 
-const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Options) => {
+const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol , coinSetting}: Options) => {
 
     const srsiDLines : number[] = []
     const srsiKLines : number[] = []
@@ -60,14 +62,28 @@ const newSrsiStrategy = async ({srsi , klines , lastema , atrSLF,symbol}: Option
     const sizeShort = riskManagement({entryPrice:markPrice,stoplossPrice:slShort,availableBalance:balance.balance})
     const leverage =Number(((markPrice*sizeLong)/balance.availableBalance*multiCoin.length).toFixed(0))+1
 
+    const indexFinder = (element :coinSettingstype) => element.symbol === symbol
+
     if(shortTradeTrigger){
-        sendTelegramMessage(`Size: ${sizeShort.toFixed(3)},Leverage:${leverage}, ${symbol}, Short trade : Mark Price :${markPrice.toFixed(3)} , SL: ${slShort.toFixed(3)} , TP: ${tpShort.toFixed(3)}`)
-        shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage})
+        sendTelegramMessage(`Size: ${sizeShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].quantity)}, 
+        Leverage:${leverage}, 
+        ${symbol}, 
+        Short trade 
+        Mark Price : ${markPrice.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)}, 
+        SL: ${slShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)}, 
+        TP: ${tpShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)}`)
+        shortOrder({slShort , tpShort ,symbol ,sizeShort ,leverage,coinSetting})
     }
     
     if(longTradeTrigger){
-        sendTelegramMessage(`Size: ${sizeLong.toFixed(3)} ,Leverage:${leverage}, ${symbol} Long trade : Mark Price :${markPrice.toFixed(3)} , SL: ${slLong.toFixed(3)} , TP: ${tpLong.toFixed(3)} `)
-        longOrder({slLong , tpLong ,symbol ,sizeLong ,leverage})
+        sendTelegramMessage(`Size: ${sizeLong.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].quantity)}, 
+        Leverage:${leverage}, 
+        ${symbol}, 
+        Long trade 
+        Mark Price : ${markPrice.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)}, 
+        SL: ${slShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)}, 
+        TP: ${tpShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)}`)
+        longOrder({slLong , tpLong ,symbol ,sizeLong ,leverage,coinSetting})
     }
 
     console.log("-----------------------------------------------------")

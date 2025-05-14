@@ -1,7 +1,7 @@
 import "dotenv/config";
 import sendTelegramMessage from './../telegram/telegram';
 import { BinanceClient } from "./connection";
-import coinSettings from "./coinsettings";
+import { coinSettingstype } from "./getcoinsettings";
 
 type shortProps = {
   slShort : number
@@ -9,6 +9,7 @@ type shortProps = {
   symbol: String
   sizeShort:number
   leverage:number
+  coinSetting:coinSettingstype[]
 }
 
 type longProps = {
@@ -17,24 +18,18 @@ type longProps = {
   symbol: String
   sizeLong:number
   leverage:number
+  coinSetting:coinSettingstype[]
 }
 
-type coinSettingsPrefix = {
-  symbol : string
-  price : number
-  quantity: number
-}
-
-export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage} : longProps) =>{
+export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage ,coinSetting} : longProps) =>{
   
-  const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
+  const indexFinder = (element :coinSettingstype) => element.symbol === symbol
   
-  const quantityToOrder = sizeLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
-  const convertedSL = slLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
-  const convertedTP = tpLong.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
+  const quantityToOrder = sizeLong.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].quantity)
+  const convertedSL = slLong.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)
+  const convertedTP = tpLong.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)
   
     await BinanceClient.useServerTime()
-    //await BinanceClient.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await BinanceClient.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
     await BinanceClient.futuresMarketBuy( symbol, quantityToOrder ).then((res:any) => console.log(res))
     
@@ -59,16 +54,14 @@ export const longOrder = async ({slLong , tpLong, symbol ,sizeLong, leverage} : 
     sendTelegramMessage("Long order sent")
 }
 
-export const shortOrder = async ({slShort , tpShort ,symbol, sizeShort,leverage}:shortProps) =>{
-
-  const indexFinder = (element :coinSettingsPrefix) => element.symbol === symbol
+export const shortOrder = async ({slShort , tpShort ,symbol, sizeShort,leverage,coinSetting}:shortProps) =>{
+  const indexFinder = (element :coinSettingstype) => element.symbol === symbol
   
-  const quantityToOrder = sizeShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].quantity)
-  const convertedSL = slShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
-  const convertedTP = tpShort.toFixed(coinSettings[coinSettings.findIndex(indexFinder)].price)
+  const quantityToOrder = sizeShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].quantity)
+  const convertedSL = slShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)
+  const convertedTP = tpShort.toFixed(coinSetting[coinSetting.findIndex(indexFinder)].price)
 
     await BinanceClient.useServerTime()
-    //await BinanceClient.futuresMarginType( symbol, 'ISOLATED' ).then((res:any) => console.log(res))
     await BinanceClient.futuresLeverage( symbol, leverage ).then((res:any) => console.log(res))
     await BinanceClient.futuresMarketSell( symbol, quantityToOrder ).then((res:any) => console.log(res))
     

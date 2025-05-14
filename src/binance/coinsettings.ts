@@ -6,10 +6,10 @@ const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '');
 const coinsJson :coinSettingstype[] = []
 const collectedData :coinSettingstype[] = []
 
-const coinSettings = async () =>{
+const coinSettings = () =>{
 
         try {
-            const data = await fs.promises.readFile('./src/binance/coinsettings2_test.json', 'utf-8');
+            const data =  fs.readFileSync('./src/binance/coinsettings2_test.json', 'utf-8');
             coinsJson.push(JSON.parse(data));
 
             multiCoin.map((symbol :string)=>{
