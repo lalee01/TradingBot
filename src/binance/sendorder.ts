@@ -1,7 +1,7 @@
 import "dotenv/config";
 import sendTelegramMessage from './../telegram/telegram';
-import coinSettings from './../binance/coinsettings'
 import { BinanceClient } from "./connection";
+import coinSettings from "./coinsettings";
 
 type shortProps = {
   slShort : number

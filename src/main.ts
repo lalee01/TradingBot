@@ -8,6 +8,7 @@ import exponentialMovingAverage from './indicator/ema'
 import klinesConverter from './binance/query/klinesConverter'
 import sendTelegramMessage from './telegram/telegram'
 import { BinanceClient } from './binance/connection'
+import coinSettings from './binance/coinsettings'
 
 const CRON_TIMING = process.env.CRON_TIMING ?? ''
 const multiCoin = JSON.parse(process.env.MULTI_CRYPTO_PAIR ?? '')
@@ -15,7 +16,9 @@ const atrLength = Number(process.env.ATR_LENGTH)
 const emaLength = Number(process.env.EMA)
 const rsiLength = Number(process.env.RSI_LENGTH);
 
-sendTelegramMessage("Bot Started");
+console.log(coinSettings)
+
+sendTelegramMessage(`Bot Started with :`);
 
 cron.schedule(CRON_TIMING, async () => {
     await BinanceClient.useServerTime()

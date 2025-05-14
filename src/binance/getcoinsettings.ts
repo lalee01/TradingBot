@@ -1,5 +1,6 @@
 import { BinanceClient } from "./connection.js"
 import fs from "fs"
+import 'dotenv/config'
 
 type coinSettings = {
     symbol:string
@@ -13,42 +14,42 @@ type coinSettings = {
     marketLotFilter:Object
 }
 
+const re = RegExp(".0*1" );
+
+
 (async () =>{
     const info:Array<any>=[]
     const coinSettings :Array<coinSettings>=[]
     await BinanceClient.futuresExchangeInfo().then((response:Promise<Array>)=>info.push(response.symbols));
 
     info[0].map((element:any)=>{
+
+        const counter = (size:number)=>{
+            let precision = []
+            if(size == 1){
+            precision.push(0) 
+          }else{
+            precision.push(re.exec(size)[0].length -1)
+          }
+        return precision[0]
+        }
+
         const oneSymbolInfo = {
             symbol:element.symbol,
-            pair:element.pair,
-            baseAsset:element.baseAsset,
-            quoteAsset:element.quoteAsset,
-            pricePrecision:element.pricePrecision,
-            quantityPrecision:element.quantityPrecision,
-            priceFilter:element.filters[0],
-            lotFilter:element.filters[1],
-            marketLotFilter:element.filters[2]
+            price:counter(element.filters[0].tickSize),
+            quantity:counter(element.filters[1].stepSize),
         }
         coinSettings.push(oneSymbolInfo)
     })
 
     const jsonData = JSON.stringify(coinSettings, null, 2);
 
-    fs.writeFile("./src/binance/coinsettings2.json", jsonData, 'utf8', (err) => {
+    fs.writeFile("./src/binance/coinsettings2_test.json", jsonData, 'utf8', (err) => {
         if (err) {
             console.error('Error writing to file', err);
         } else {
             console.log('Data written to file');
         }
     })
-    fs.readFile("./src/binance/coinsettings2.json" , (error , data )=>{
 
-        if(error){
-            console.log(error)
-        }
-
-        const coinSettings = JSON.parse(data)
-        console.log(coinSettings[158])
-    })
 })()
