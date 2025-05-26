@@ -1,6 +1,5 @@
-
 const riskMultiplier= Number(process.env.RISK ?? 1)
-const feeCorrectionForLoss = Number(process.env.FEE_CORRECTION ?? 1)
+const feeRate = Number(process.env.FEE_CORRECTION ?? 1)
 
 type settingProps = {
     entryPrice : number
@@ -10,9 +9,11 @@ type settingProps = {
 
 const riskManagement = ({entryPrice,stoplossPrice,availableBalance}:settingProps) =>{
 
-  const riskInPrice = availableBalance * feeCorrectionForLoss * (0.01 * riskMultiplier)
+  const maxRisk = availableBalance * (0.01 * riskMultiplier)
   const distance = Math.abs(entryPrice - stoplossPrice)
-  const quantity =riskInPrice / distance
+  const rawQuantity = maxRisk / distance
+  const fee = entryPrice * rawQuantity * feeRate
+  const quantity = (maxRisk - fee) / distance
 
 return quantity
 }
